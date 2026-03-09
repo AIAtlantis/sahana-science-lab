@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔬 Sahana Science Lab v2.4 FIXED</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Quicksand:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080f;
+  --panel:#0e1020;
+  --card:#131529;
+  --card2:#1a1d35;
+  --geo:#e8730c;
+  --vol:#e63946;
+  --atm:#4cc9f0;
+  --green:#06d6a0;
+  --yellow:#ffd166;
+  --pink:#ff6b9d;
+  --purple:#9b5de5;
+  --text:#eef0ff;
+  --muted:#8b8faa;
+  --border:rgba(255,255,255,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Quicksand',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Animated bg stars */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 35%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 15% 85%, rgba(76,201,240,0.2) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 10%, rgba(232,115,12,0.2) 0%, transparent 100%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ===== HEADER ===== */
+.header{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  padding:36px 20px 0;
+  overflow:hidden;
+}
+.header-glow{
+  position:absolute;
+  top:-60px;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse, rgba(232,115,12,0.18) 0%, rgba(76,201,240,0.1) 50%, transparent 70%);
+  pointer-events:none;
+}
+.logo-row{
+  display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;
+}
+.logo-icon{
+  font-size:3.2rem;
+  animation:float 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px rgba(232,115,12,0.7));
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+h1.main-title{
+  font-family:'Boogaloo',cursive;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  background:linear-gradient(135deg,var(--geo),var(--yellow),var(--atm));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;letter-spacing:1px;
+}
+.subtitle-row{
+  font-size:0.9rem;color:var(--muted);font-weight:600;
+  margin:6px 0 20px;letter-spacing:0.5px;
+}
+.scoreboard{
+  display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:60px;
+  padding:10px 24px;
+  margin-bottom:24px;
+}
+.score-item{display:flex;align-items:center;gap:7px;font-weight:700;font-size:0.95rem;}
+.score-val{
+  font-family:'VT323',monospace;font-size:1.5rem;
+  background:linear-gradient(135deg,var(--yellow),var(--geo));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  min-width:40px;text-align:right;
+  transition:transform 0.2s;
+}
+.score-val.bump{animation:bump 0.3s ease;}
+@keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.lvl-chip{
+  background:linear-gradient(135deg,var(--purple),#7b2d8b);
+  border-radius:50px;padding:4px 16px;
+  font-size:0.82rem;font-weight:700;
+  box-shadow:0 0 16px rgba(155,93,229,0.4);
+}
+
+/* ===== NAV ===== */
+.nav-wrap{
+  display:flex;justify-content:center;gap:6px;
+  padding:0 16px 24px;flex-wrap:wrap;position:relative;z-index:1;
+}
+.nav-btn{
+  display:flex;align-items:center;gap:7px;
+  background:var(--panel);border:2px solid var(--border);
+  border-radius:14px;padding:10px 20px;
+  color:var(--muted);font-family:'Quicksand',sans-serif;
+  font-weight:700;font-size:0.88rem;cursor:pointer;
+  transition:all 0.25s;
+}
+.nav-btn:hover{border-color:var(--yellow);color:var(--text);transform:translateY(-3px);}
+.nav-btn.active{
+  background:linear-gradient(135deg,var(--geo),#c44b00);
+  border-color:var(--geo);color:white;
+  transform:translateY(-3px);
+  box-shadow:0 6px 24px rgba(232,115,12,0.45);
+}
+.nav-btn .nb-icon{font-size:1.2rem;}
+
+/* ===== SECTIONS ===== */
+.section{display:none;position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 16px 80px;}
+.section.active{display:block;animation:slideUp 0.35s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== JOKE BANNER ===== */
+.joke-banner{
+  display:none;
+  background:linear-gradient(135deg,rgba(255,107,157,0.15),rgba(155,93,229,0.1));
+  border:2px solid rgba(255,107,157,0.4);
+  border-radius:18px;padding:16px 24px;
+  margin-bottom:24px;
+  text-align:center;
+  animation:jokeIn 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+.joke-banner.show{display:block;}
+@keyframes jokeIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+.joke-label{font-size:0.75rem;font-weight:700;letter-spacing:2px;color:var(--pink);text-transform:uppercase;margin-bottom:6px;}
+.joke-text{font-size:1.05rem;font-weight:700;color:var(--text);}
+.joke-punchline{font-size:0.95rem;color:var(--pink);font-weight:600;margin-top:4px;}
+
+/* ===== STUDY GUIDE ===== */
+.topic-banner{
+  border-radius:20px;padding:20px 28px;
+  margin:28px 0 20px;
+  display:flex;align-items:center;gap:18px;
+  position:relative;overflow:hidden;
+}
+.topic-banner::after{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:130px;height:130px;border-radius:50%;
+  opacity:0.08;
+}
+.topic-banner.geo{background:linear-gradient(135deg,rgba(232,115,12,0.2),rgba(180,80,0,0.1));border-left:5px solid var(--geo);}
+.topic-banner.geo::after{background:var(--geo);}
+.topic-banner.vol{background:linear-gradient(135deg,rgba(230,57,70,0.2),rgba(180,20,30,0.1));border-left:5px solid var(--vol);}
+.topic-banner.vol::after{background:var(--vol);}
+.topic-banner.atm{background:linear-gradient(135deg,rgba(76,201,240,0.18),rgba(0,120,180,0.1));border-left:5px solid var(--atm);}
+.topic-banner.atm::after{background:var(--atm);}
+.tb-icon{font-size:3rem;filter:drop-shadow(0 0 10px currentColor);}
+.tb-title{font-family:'Boogaloo',cursive;font-size:2rem;}
+.tb-sub{font-size:0.85rem;color:var(--muted);font-weight:600;margin-top:3px;}
+.topic-banner.geo .tb-title{color:#ff9a4a;}
+.topic-banner.vol .tb-title{color:#ff6b72;}
+.topic-banner.atm .tb-title{color:#74d7f7;}
+
+.study-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:14px;}
+.study-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.study-card:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,0.5);}
+.sc-header{
+  display:flex;align-items:center;gap:9px;
+  font-family:'Boogaloo',cursive;font-size:1.15rem;
+  margin-bottom:14px;
+}
+.sc-items{display:flex;flex-direction:column;gap:7px;}
+.sc-item{
+  padding:9px 13px;
+  background:rgba(255,255,255,0.04);
+  border-radius:10px;font-size:0.9rem;line-height:1.5;
+  border-left:3px solid;
+}
+.study-card.geo .sc-item{border-left-color:var(--geo);}
+.study-card.vol .sc-item{border-left-color:var(--vol);}
+.study-card.atm .sc-item{border-left-color:var(--atm);}
+
+.full-card{grid-column:1/-1;}
+.wide-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:8px;}
+.wide-table th{
+  padding:9px 11px;text-align:left;
+  font-weight:700;font-size:0.8rem;letter-spacing:0.5px;
+  border-bottom:2px solid;
+}
+.wide-table.geo th{color:#ff9a4a;border-color:var(--geo);background:rgba(232,115,12,0.12);}
+.wide-table.vol th{color:#ff6b72;border-color:var(--vol);background:rgba(230,57,70,0.12);}
+.wide-table.atm th{color:#74d7f7;border-color:var(--atm);background:rgba(76,201,240,0.12);}
+.wide-table td{padding:8px 11px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top;}
+.wide-table tr:hover td{background:rgba(255,255,255,0.03);}
+.badge{display:inline-block;padding:2px 9px;border-radius:50px;font-size:0.73rem;font-weight:700;}
+.b-pz{background:rgba(232,115,12,0.2);color:#ff9a4a;border:1px solid var(--geo);}
+.b-mz{background:rgba(230,57,70,0.2);color:#ff6b72;border:1px solid var(--vol);}
+.b-cz{background:rgba(76,201,240,0.2);color:#74d7f7;border:1px solid var(--atm);}
+.b-pre{background:rgba(150,150,150,0.2);color:#aaa;border:1px solid #666;}
+.extinct{color:var(--vol);font-weight:800;font-size:0.78rem;}
+
+.funfact{
+  display:flex;gap:12px;align-items:flex-start;
+  background:linear-gradient(135deg,rgba(255,209,102,0.1),rgba(255,165,0,0.05));
+  border:2px dashed rgba(255,209,102,0.4);
+  border-radius:16px;padding:14px 18px;
+  margin:14px 0;
+}
+.funfact-icon{font-size:1.8rem;flex-shrink:0;margin-top:2px;}
+.funfact p{font-size:0.9rem;color:#ffe08a;font-weight:600;line-height:1.5;}
+
+.joke-card{
+  background:linear-gradient(135deg,rgba(155,93,229,0.12),rgba(255,107,157,0.08));
+  border:2px solid rgba(155,93,229,0.3);
+  border-radius:16px;padding:16px 20px;
+  margin:14px 0;text-align:center;
+}
+.joke-card .jc-q{font-size:1rem;font-weight:700;margin-bottom:8px;}
+.joke-card .jc-a{font-size:0.92rem;color:var(--pink);font-weight:600;}
+.joke-card .jc-label{font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+
+/* ===== QUIZ ===== */
+.quiz-wrap{max-width:820px;margin:0 auto;}
+.qz-header{
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:14px;margin-bottom:20px;
+}
+.qz-counter{font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--yellow);white-space:nowrap;}
+.qz-bar-bg{height:12px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;}
+.qz-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--vol),var(--yellow),var(--green));transition:width 0.5s ease;}
+.qz-pts{font-family:'VT323',monospace;font-size:1.6rem;color:var(--green);white-space:nowrap;}
+
+.diff-badge{
+  display:inline-block;padding:3px 12px;border-radius:50px;
+  font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.diff-easy{background:rgba(6,214,160,0.2);color:var(--green);border:1px solid var(--green);}
+.diff-med{background:rgba(255,209,102,0.2);color:var(--yellow);border:1px solid var(--yellow);}
+.diff-hard{background:rgba(230,57,70,0.2);color:var(--vol);border:1px solid var(--vol);}
+.diff-expert{background:rgba(155,93,229,0.25);color:#c084fc;border:1px solid var(--purple);}
+
+.q-card{
+  background:var(--card);border-radius:22px;
+  padding:28px 30px;border:1px solid var(--border);
+  margin-bottom:16px;position:relative;overflow:hidden;
+}
+.q-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.q-card.geo::before{background:linear-gradient(90deg,var(--geo),transparent);}
+.q-card.vol::before{background:linear-gradient(90deg,var(--vol),transparent);}
+.q-card.atm::before{background:linear-gradient(90deg,var(--atm),transparent);}
+.q-tag-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.q-topic-tag{padding:4px 14px;border-radius:50px;font-size:0.75rem;font-weight:700;}
+.tg-geo{background:rgba(232,115,12,0.2);color:#ff9a4a;border:1px solid rgba(232,115,12,0.4);}
+.tg-vol{background:rgba(230,57,70,0.2);color:#ff6b72;border:1px solid rgba(230,57,70,0.4);}
+.tg-atm{background:rgba(76,201,240,0.2);color:#74d7f7;border:1px solid rgba(76,201,240,0.4);}
+.q-text{font-size:1.15rem;font-weight:700;line-height:1.6;margin-bottom:22px;}
+.opts-col{display:flex;flex-direction:column;gap:9px;}
+.opt-btn{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,0.04);
+  border:2px solid rgba(255,255,255,0.1);
+  border-radius:13px;padding:13px 17px;
+  color:var(--text);font-family:'Quicksand',sans-serif;
+  font-size:0.97rem;font-weight:600;cursor:pointer;
+  text-align:left;transition:all 0.2s;
+}
+.opt-btn:hover:not(:disabled){background:rgba(255,255,255,0.09);border-color:var(--yellow);transform:translateX(5px);}
+.opt-btn.correct{background:rgba(6,214,160,0.18);border-color:var(--green);color:#7fffd4;}
+.opt-btn.wrong{background:rgba(230,57,70,0.18);border-color:var(--vol);color:#ffb3b8;}
+.opt-btn:disabled{cursor:not-allowed;}
+.opt-letter{
+  width:34px;height:34px;border-radius:9px;flex-shrink:0;
+  background:rgba(255,255,255,0.09);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'VT323',monospace;font-size:1.2rem;font-weight:700;
+}
+.opt-btn.correct .opt-letter{background:var(--green);color:var(--bg);}
+.opt-btn.wrong .opt-letter{background:var(--vol);color:white;}
+
+.fb-box{
+  display:none;border-radius:13px;padding:14px 18px;
+  margin-top:12px;font-weight:600;font-size:0.92rem;line-height:1.5;
+}
+.fb-box.correct{background:rgba(6,214,160,0.12);border:1px solid rgba(6,214,160,0.4);color:#9effd6;display:flex;gap:10px;}
+.fb-box.wrong{background:rgba(230,57,70,0.12);border:1px solid rgba(230,57,70,0.4);color:#ffcdd0;display:flex;gap:10px;}
+.fb-joke{
+  margin-top:10px;padding:10px 14px;
+  background:rgba(155,93,229,0.12);border:1px solid rgba(155,93,229,0.3);
+  border-radius:10px;color:#d4aaff;font-size:0.86rem;
+}
+
+.qz-nav{display:flex;justify-content:flex-end;gap:12px;margin-top:16px;}
+.btn-go{
+  background:linear-gradient(135deg,var(--geo),#b34400);
+  border:none;border-radius:13px;padding:13px 32px;
+  color:white;font-family:'Boogaloo',cursive;font-size:1.2rem;
+  cursor:pointer;transition:all 0.2s;
+  box-shadow:0 4px 18px rgba(232,115,12,0.45);
+}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,115,12,0.55);}
+.btn-outline{
+  background:transparent;border:2px solid rgba(255,255,255,0.2);
+  border-radius:13px;padding:11px 24px;
+  color:var(--muted);font-family:'Quicksand',sans-serif;
+  font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.2s;
+}
+.btn-outline:hover{border-color:var(--yellow);color:var(--text);}
+
+/* RESULT */
+.result-screen{text-align:center;padding:50px 20px;}
+.result-volcano{font-size:5rem;animation:erupt 1s ease infinite alternate;}
+@keyframes erupt{from{transform:scale(1)}to{transform:scale(1.15) translateY(-5px)}}
+.result-pct{font-family:'Boogaloo',cursive;font-size:5rem;background:linear-gradient(135deg,var(--yellow),var(--geo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.result-grade{font-family:'Boogaloo',cursive;font-size:2rem;margin:4px 0 12px;color:var(--muted);}
+.result-joke-wrap{margin:20px auto;max-width:500px;}
+
+/* ===== FLASHCARDS ===== */
+.fc-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px;}
+.fc-filter{
+  padding:7px 16px;border-radius:50px;border:2px solid rgba(255,255,255,0.1);
+  background:transparent;color:var(--muted);
+  font-family:'Quicksand',sans-serif;font-weight:700;font-size:0.83rem;cursor:pointer;transition:all 0.2s;
+}
+.fc-filter.on{background:rgba(255,209,102,0.12);border-color:var(--yellow);color:var(--yellow);}
+.fc-matched{margin-left:auto;font-family:'VT323',monospace;font-size:1.4rem;color:var(--green);}
+.fc-status-bar{
+  text-align:center;min-height:36px;
+  font-family:'Boogaloo',cursive;font-size:1.2rem;
+  color:var(--yellow);margin-bottom:12px;
+}
+.fc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:11px;
+}
+.fc-wrap{aspect-ratio:1;cursor:pointer;perspective:900px;}
+.fc-inner{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.5s cubic-bezier(.4,0,.2,1);
+  border-radius:14px;
+}
+.fc-wrap.open .fc-inner{transform:rotateY(180deg);}
+.fc-wrap.done .fc-inner{opacity:0.35;pointer-events:none;}
+.fc-face,.fc-back{
+  position:absolute;inset:0;border-radius:14px;
+  backface-visibility:hidden;
+  display:flex;align-items:center;justify-content:center;
+  padding:10px;text-align:center;
+  font-weight:700;line-height:1.3;
+}
+.fc-face{
+  background:var(--card2);
+  border:2px solid rgba(255,255,255,0.12);
+  font-family:'VT323',monospace;font-size:2.2rem;
+  color:var(--yellow);
+}
+.fc-back{
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border:2px solid rgba(255,255,255,0.1);
+  font-size:0.78rem;color:var(--text);
+  transform:rotateY(180deg);
+}
+.fc-wrap.sel .fc-inner{box-shadow:0 0 0 3px var(--yellow);}
+.fc-wrap.hit .fc-inner{box-shadow:0 0 0 3px var(--green);animation:flashGreen 0.6s ease;}
+.fc-wrap.miss .fc-inner{animation:flashRed 0.4s ease;}
+@keyframes flashGreen{0%,100%{box-shadow:0 0 0 3px var(--green)}50%{box-shadow:0 0 18px 6px var(--green)}}
+@keyframes flashRed{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-6px)}75%{transform:rotateY(180deg) translateX(6px)}}
+
+/* ===== LIGHTNING ROUND ===== */
+.lr-wrap{max-width:700px;margin:0 auto;}
+.lr-intro{text-align:center;padding:30px 20px;}
+.lr-intro h2{font-family:'Boogaloo',cursive;font-size:2.4rem;color:var(--yellow);}
+.lr-intro p{color:var(--muted);margin:10px 0 24px;font-weight:600;}
+.lr-timer-ring{
+  width:100px;height:100px;margin:20px auto;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.lr-timer-ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.lr-timer-ring circle{fill:none;stroke-width:6;stroke-linecap:round;}
+.lr-timer-ring .bg-ring{stroke:rgba(255,255,255,0.1);}
+.lr-timer-ring .prog-ring{
+  stroke:var(--green);
+  stroke-dasharray:276;
+  stroke-dashoffset:0;
+  transition:stroke-dashoffset 1s linear,stroke 0.5s;
+}
+.lr-timer-num{font-family:'VT323',monospace;font-size:2.4rem;color:var(--yellow);position:relative;}
+.lr-q-card{
+  background:var(--card);border-radius:22px;padding:28px 24px;
+  border:2px solid rgba(255,209,102,0.2);
+  text-align:center;margin-bottom:16px;
+}
+.lr-q-text{font-size:1.3rem;font-weight:700;line-height:1.5;margin:16px 0 24px;}
+.lr-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lr-tf-btn{
+  padding:18px;border-radius:16px;border:3px solid;
+  font-family:'Boogaloo',cursive;font-size:1.8rem;
+  cursor:pointer;transition:all 0.2s;
+}
+.lr-tf-btn.true-btn{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.4);color:var(--green);}
+.lr-tf-btn.false-btn{background:rgba(230,57,70,0.1);border-color:rgba(230,57,70,0.4);color:var(--vol);}
+.lr-tf-btn:hover{transform:scale(1.04);}
+.lr-tf-btn.correct{background:rgba(6,214,160,0.3);border-color:var(--green);}
+.lr-tf-btn.wrong{background:rgba(230,57,70,0.3);border-color:var(--vol);}
+.lr-streak{font-family:'Boogaloo',cursive;font-size:1.1rem;color:var(--pink);text-align:center;min-height:28px;}
+.lr-result{text-align:center;padding:40px 20px;}
+.lr-score-big{font-family:'Boogaloo',cursive;font-size:4rem;color:var(--yellow);}
+
+/* ===== JOURNEY ===== */
+.journey-wrap{max-width:800px;margin:0 auto;}
+.jrn-intro{text-align:center;padding:10px 0 28px;}
+.jrn-intro h2{font-family:'Boogaloo',cursive;font-size:2.2rem;color:var(--yellow);}
+.jrn-path{position:relative;padding:10px 0;}
+.jrn-path::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;
+  width:3px;background:linear-gradient(to bottom,var(--geo),var(--vol),var(--atm));
+  transform:translateX(-50%);border-radius:2px;
+}
+.jrn-stop{
+  display:flex;align-items:flex-start;margin-bottom:28px;
+  gap:0;position:relative;
+}
+.jrn-stop:nth-child(odd){flex-direction:row;}
+.jrn-stop:nth-child(even){flex-direction:row-reverse;}
+.jrn-content{flex:1;max-width:calc(50% - 50px);}
+.jrn-stop:nth-child(odd) .jrn-content{padding-right:20px;text-align:right;}
+.jrn-stop:nth-child(even) .jrn-content{padding-left:20px;text-align:left;}
+.jrn-node{
+  width:60px;height:60px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;flex-shrink:0;z-index:2;
+  cursor:pointer;transition:all 0.25s;
+  box-shadow:0 4px 20px rgba(0,0,0,0.6);
+}
+.jrn-node:hover:not(.jlocked){transform:scale(1.12);}
+.jrn-node.jgeo{background:radial-gradient(circle,#ff9a4a,var(--geo));border:3px solid #ffbb77;}
+.jrn-node.jvol{background:radial-gradient(circle,#ff6b6b,var(--vol));border:3px solid #ff9999;}
+.jrn-node.jatm{background:radial-gradient(circle,#74d7f7,var(--atm));border:3px solid #aae8ff;}
+.jrn-node.jlocked{background:rgba(50,50,60,0.9);border:3px solid rgba(255,255,255,0.08);cursor:not-allowed;filter:grayscale(1);opacity:0.45;}
+.jrn-node.jdone{box-shadow:0 0 24px rgba(6,214,160,0.7);}
+.jrn-spacer{flex:1;max-width:calc(50% - 50px);}
+.jrn-card{
+  background:var(--card);border-radius:14px;padding:14px 16px;
+  border:1px solid var(--border);
+}
+.jrn-card h3{font-family:'Boogaloo',cursive;font-size:1.1rem;margin-bottom:4px;}
+.jrn-card p{font-size:0.82rem;color:var(--muted);line-height:1.4;}
+.jrn-pts{
+  display:inline-block;margin-top:8px;padding:2px 11px;
+  background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.3);
+  border-radius:50px;font-size:0.76rem;font-weight:700;color:var(--yellow);
+}
+.jrn-done-tag{
+  display:inline-block;margin-top:8px;margin-left:5px;
+  padding:2px 11px;
+  background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);
+  border-radius:50px;font-size:0.76rem;font-weight:700;color:var(--green);
+}
+
+/* MODAL */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.88);z-index:1000;
+  align-items:center;justify-content:center;padding:16px;
+  backdrop-filter:blur(6px);
+}
+.modal-bg.open{display:flex;animation:fadeIn 0.2s;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-inner{
+  background:var(--card2);border-radius:26px;
+  padding:36px 32px;max-width:580px;width:100%;
+  border:2px solid rgba(255,255,255,0.09);
+  box-shadow:0 30px 100px rgba(0,0,0,0.9);
+  animation:modalPop 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalPop{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-topic-row{margin-bottom:14px;}
+.modal-q-text{font-size:1.2rem;font-weight:700;line-height:1.55;margin-bottom:22px;}
+.modal-opts{display:flex;flex-direction:column;gap:9px;}
+.modal-opt{
+  padding:12px 16px;border:2px solid rgba(255,255,255,0.1);
+  border-radius:12px;background:rgba(255,255,255,0.04);
+  color:var(--text);font-family:'Quicksand',sans-serif;
+  font-weight:700;cursor:pointer;text-align:left;font-size:0.94rem;
+  transition:all 0.2s;
+}
+.modal-opt:hover:not(:disabled){border-color:var(--yellow);background:rgba(255,209,102,0.07);}
+.modal-opt.correct{background:rgba(6,214,160,0.18);border-color:var(--green);color:#9effd6;}
+.modal-opt.wrong{background:rgba(230,57,70,0.18);border-color:var(--vol);color:#ffcdd0;}
+.modal-result{display:none;text-align:center;padding-top:20px;}
+.modal-emoji-big{font-size:4rem;margin-bottom:8px;}
+.modal-pts-earned{font-family:'Boogaloo',cursive;font-size:2.8rem;color:var(--yellow);}
+.modal-explain{font-size:0.9rem;color:var(--muted);margin:8px 0 18px;line-height:1.5;}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .jrn-path::before{left:28px;}
+  .jrn-stop,.jrn-stop:nth-child(even){flex-direction:row!important;}
+  .jrn-content,.jrn-stop:nth-child(even) .jrn-content{max-width:calc(100% - 80px)!important;padding-right:0!important;text-align:left!important;padding-left:16px!important;}
+  .jrn-spacer{display:none;}
+  .study-grid{grid-template-columns:1fr;}
+  .q-card{padding:18px;}
+}
+
+/* CONFETTI */
+.confetti-piece{
+  position:fixed;width:10px;height:12px;
+  pointer-events:none;z-index:9999;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header" style="position:relative;z-index:1;">
+  <div class="header-glow"></div>
+  <div class="logo-row">
+    <div class="logo-icon">🔬</div>
+    <h1 class="main-title">Sahana's Science Lab</h1>
+    <div class="logo-icon" style="animation-delay:0.5s">🌋</div>
+  </div>
+  <div class="subtitle-row">Earth Science HQ v2 · Geologic Time · Volcanoes · Atmosphere · Test: Monday March 9th 🎯</div>
+  <div class="scoreboard">
+    <div class="score-item">⭐ <span class="score-val" id="total-pts">0</span> pts</div>
+    <div class="score-item">🎯 <span class="score-val" id="quiz-correct-track">0</span> correct</div>
+    <div class="score-item">🔥 <span class="score-val" id="streak-track">0</span> streak</div>
+    <div class="lvl-chip" id="lvl-chip">🌱 Rookie Scientist</div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn active" onclick="goTab('study',this)"><span class="nb-icon">📚</span>Study Guide</button>
+  <button class="nav-btn" onclick="goTab('quiz',this)"><span class="nb-icon">🎯</span>Quiz (30 Qs)</button>
+  <button class="nav-btn" onclick="goTab('flash',this)"><span class="nb-icon">🃏</span>Flip Cards</button>
+  <button class="nav-btn" onclick="goTab('lightning',this)"><span class="nb-icon">⚡</span>Lightning</button>
+  <button class="nav-btn" onclick="goTab('journey',this)"><span class="nb-icon">🗺️</span>Journey</button>
+</div>
+
+<!-- ==================== STUDY GUIDE ==================== -->
+<div class="section active" id="study">
+
+  <!-- JOKES SPRINKLED IN -->
+  <div class="joke-card">
+    <div class="jc-label">🤣 Science Joke to start!</div>
+    <div class="jc-q">Why did the volcano get an award?</div>
+    <div class="jc-a">Because it was outstanding in its field... and its lava was just really hot! 🌋🏆</div>
+  </div>
+
+  <!-- GEOLOGIC TIME -->
+  <div class="topic-banner geo">
+    <div class="tb-icon">⏳</div>
+    <div>
+      <div class="tb-title">Geologic Time</div>
+      <div class="tb-sub">Eras · Periods in order · Extinctions · Life milestones (backbone, eggshells, fruit, land-dwelling, hominids)</div>
+    </div>
+  </div>
+
+  <div class="study-grid">
+    <div class="study-card geo">
+      <div class="sc-header">🗺️ The Big Structure</div>
+      <div class="sc-items">
+        <div class="sc-item">Earth's time divided into <strong>ERAS</strong> → divided into <strong>PERIODS</strong></div>
+        <div class="sc-item"><strong>Pre-Era:</strong> Precambrian (4,600–541 MYA) — longest eon, simple life only, origin of life</div>
+        <div class="sc-item"><strong>3 Main Eras (oldest→newest):</strong> Paleozoic (PZ) → Mesozoic (MZ) → Cenozoic (CZ)</div>
+        <div class="sc-item">Paleozoic = <strong>7 periods</strong>; Mesozoic = <strong>3 periods</strong>; Cenozoic = <strong>3 periods</strong></div>
+      </div>
+    </div>
+    <div class="study-card geo">
+      <div class="sc-header">🎯 5 KEY Life Milestones (TEST FOCUS)</div>
+      <div class="sc-items">
+        <div class="sc-item">🦴 <strong>Backbone (vertebrates)</strong> → Cambrian Period (jawless fish)</div>
+        <div class="sc-item">🥚 <strong>Eggshells (shelled eggs)</strong> → Mississippian Period (first reptiles)</div>
+        <div class="sc-item">🌸 <strong>Fruit (flowering plants)</strong> → Cretaceous Period</div>
+        <div class="sc-item">🦎 <strong>Land-dwelling vertebrates</strong> → Devonian Period (first amphibians)</div>
+        <div class="sc-item">🦍 <strong>Hominids</strong> → Neogene Period (Cenozoic)</div>
+      </div>
+    </div>
+
+    <div class="study-card geo full-card">
+      <div class="sc-header">📋 Complete Period Timeline</div>
+      <div style="overflow-x:auto">
+      <table class="wide-table geo">
+        <thead><tr><th>Period</th><th>Era</th><th>Time (MYA)</th><th>KEY Animal/Plant Dev.</th><th>Special Event</th></tr></thead>
+        <tbody>
+          <tr><td>Precambrian</td><td><span class="badge b-pre">Pre</span></td><td>4600–541</td><td>Single-celled life; origin of multicellular organisms</td><td>Origin of life on Earth</td></tr>
+          <tr><td><strong>Cambrian</strong></td><td><span class="badge b-pz">PZ</span></td><td>541–485</td><td>🦴 <strong>First vertebrates</strong> (jawless fish); most invertebrate groups appeared</td><td>Cambrian Explosion — rapid evolution burst</td></tr>
+          <tr><td><strong>Ordovician</strong></td><td><span class="badge b-pz">PZ</span></td><td>485–444</td><td>🌿 First land plants; first corals; armored fish</td><td><span class="extinct">💀 Mass Extinction — ~80% marine species</span></td></tr>
+          <tr><td><strong>Silurian</strong></td><td><span class="badge b-pz">PZ</span></td><td>444–419</td><td>🦂 First land animals (scorpions, millipedes); first jawed fish</td><td>First vascular plants (with veins!)</td></tr>
+          <tr><td><strong>Devonian</strong></td><td><span class="badge b-pz">PZ</span></td><td>419–359</td><td>🦎 <strong>First amphibians (land-dwelling vertebrates)</strong>; first trees 🌲</td><td>Age of Fishes — sharks became common 🦈</td></tr>
+          <tr><td>Mississippian</td><td><span class="badge b-pz">PZ</span></td><td>359–323</td><td>🥚 <strong>First reptiles + shelled eggs</strong>; winged insects (dragonflies)</td><td>Coal-forming tropical forests</td></tr>
+          <tr><td>Pennsylvanian</td><td><span class="badge b-pz">PZ</span></td><td>323–299</td><td>First conifers; land snails</td><td>Pangaea begins assembling</td></tr>
+          <tr><td><strong>Permian</strong></td><td><span class="badge b-pz">PZ</span></td><td>299–252</td><td>Mammal precursors evolved; reptiles diversified</td><td><span class="extinct">💀 LARGEST EVER — ~96% all species gone!</span></td></tr>
+          <tr><td>Triassic</td><td><span class="badge b-mz">MZ</span></td><td>252–201</td><td>🦕 First dinosaurs; first true mammals; first lizards</td><td>Pangaea begins breaking apart</td></tr>
+          <tr><td><strong>Jurassic</strong></td><td><span class="badge b-mz">MZ</span></td><td>201–145</td><td>🐦 <strong>First birds</strong>; giant dinosaurs roam; tiny mammals</td><td>Atlantic Ocean begins forming</td></tr>
+          <tr><td><strong>Cretaceous</strong></td><td><span class="badge b-mz">MZ</span></td><td>145–66</td><td>🌸 <strong>First flowering plants (fruit!)</strong>; ants, bees, butterflies appeared</td><td><span class="extinct">💀 Meteorite — dinosaurs + 80% life extinct</span></td></tr>
+          <tr><td>Paleogene</td><td><span class="badge b-cz">CZ</span></td><td>66–23</td><td>🐘 Rapid mammal + bird + flowering plant evolution</td><td>Forests widespread and dominant</td></tr>
+          <tr><td><strong>Neogene</strong></td><td><span class="badge b-cz">CZ</span></td><td>23–2.6</td><td>🦍 <strong>First hominids</strong>; modern animals evolve</td><td>Grasslands become dominant; grazing animals thrive</td></tr>
+          <tr><td>Quaternary</td><td><span class="badge b-cz">CZ</span></td><td>2.6–Now</td><td>👤 Modern humans spread worldwide</td><td>Ice ages every ~100,000 years; megafauna extinctions</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="study-card geo">
+      <div class="sc-header">💥 3 Major Extinctions</div>
+      <div class="sc-items">
+        <div class="sc-item">🌊 <strong>End-Ordovician:</strong> ~80% of marine species — caused by massive ice age</div>
+        <div class="sc-item">☠️ <strong>End-Permian ("The Great Dying"):</strong> ~96% of ALL species — worst EVER; cause still debated</div>
+        <div class="sc-item">☄️ <strong>End-Cretaceous:</strong> ~80% including all non-bird dinosaurs — Chicxulub meteorite impact</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="funfact">
+    <div class="funfact-icon">🤯</div>
+    <p><strong>Mind-Blowing Fact:</strong> If Earth's 4.6-billion-year history = a 24-hour clock, the Precambrian fills 21 hours, dinosaurs appear at 11:39 PM, and ALL of human history fits into the final <strong>0.2 seconds</strong> before midnight!</p>
+  </div>
+  <div class="joke-card">
+    <div class="jc-label">🦕 Dino Joke</div>
+    <div class="jc-q">What do you call a sleeping dinosaur?</div>
+    <div class="jc-a">A dino-SNORE! 😴🦕</div>
+  </div>
+
+  <!-- VOLCANOES -->
+  <div class="topic-banner vol">
+    <div class="tb-icon">🌋</div>
+    <div>
+      <div class="tb-title">Volcanoes</div>
+      <div class="tb-sub">Where they form · 3 types compared · Pyroclastic material · Hot spots · Viscosity</div>
+    </div>
+  </div>
+
+  <div class="study-grid">
+    <div class="study-card vol">
+      <div class="sc-header">📍 3 Locations Where Volcanoes Form</div>
+      <div class="sc-items">
+        <div class="sc-item">🔴 <strong>Convergent Boundaries</strong> — plates COLLIDE → explosive composite volcanoes; subduction pushes plate under</div>
+        <div class="sc-item">🔵 <strong>Divergent Boundaries</strong> — plates MOVE APART → magma rises to fill gap; mostly underwater (mid-ocean ridges)</div>
+        <div class="sc-item">🟡 <strong>Hot Spots</strong> — STATIONARY magma plumes; plate moves OVER them → volcanic island chains (e.g. Hawaii)</div>
+        <div class="sc-item">🌊 <strong>Key stat:</strong> ~90% of all volcanic activity is underwater!</div>
+      </div>
+    </div>
+    <div class="study-card vol">
+      <div class="sc-header">🍯 Viscosity — The Key Concept</div>
+      <div class="sc-items">
+        <div class="sc-item"><strong>Viscosity</strong> = how thick/resistant to flow a liquid is</div>
+        <div class="sc-item">🍯 HIGH viscosity = thick like honey → lava builds UP → steep, explosive volcano</div>
+        <div class="sc-item">💧 LOW viscosity = flows like water → lava spreads OUT → broad, flat shield volcano</div>
+        <div class="sc-item">High viscosity lava traps gases → pressure builds → EXPLOSIVE eruptions!</div>
+      </div>
+    </div>
+    <div class="study-card vol full-card">
+      <div class="sc-header">🌋 3 Volcano Types — Full Comparison</div>
+      <div style="overflow-x:auto">
+      <table class="wide-table vol">
+        <thead><tr><th>Type</th><th>Shape</th><th>Lava Viscosity</th><th>Lava Type</th><th>Eruption</th><th>Size</th><th>Where</th></tr></thead>
+        <tbody>
+          <tr><td>🔺 Cinder Cone</td><td>Steep cone</td><td>Medium-high</td><td>Basaltic + scoria</td><td>High-temp, gas-rich, SHORT cycles; cinders accumulate near vent</td><td>Smallest ~100m</td><td>Often on sides of larger volcanoes (parasitic cones)</td></tr>
+          <tr><td>🛡️ Shield</td><td>Broad, flat, shield-shaped</td><td>LOW (flows easily)</td><td>Basaltic, hot</td><td>Multiple lava flows, NOT explosive — lava spreads out</td><td>LARGEST type</td><td>Hot spots + divergent boundaries</td></tr>
+          <tr><td>🏔️ Composite</td><td>Large, steep-sided, layered</td><td>HIGH (very viscous)</td><td>Very thick lava</td><td>EXPLOSIVE; layers of lava AND ash build up</td><td>Large</td><td>Mostly convergent boundaries</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="study-card vol">
+      <div class="sc-header">📚 Vocabulary Mastery</div>
+      <div class="sc-items">
+        <div class="sc-item">🔥 <strong>Magma</strong> — molten rock <em>beneath</em> Earth's surface (underground)</div>
+        <div class="sc-item">🌋 <strong>Lava</strong> — molten rock that has <em>erupted</em> onto Earth's surface</div>
+        <div class="sc-item">🪨 <strong>Pyroclastic Material</strong> — ALL solid material released in eruption; large = falls near volcano; small ash = travels far with wind</div>
+        <div class="sc-item">🫧 <strong>Hot Spot</strong> — stationary plume; plate moves OVER it = chain of volcanic islands (Hawaii!)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="funfact">
+    <div class="funfact-icon">🏝️</div>
+    <p><strong>Hot Spot Fun Fact:</strong> The Hawaiian Islands are a perfectly preserved record of a tectonic plate moving! The Big Island is youngest (directly over the hot spot), while Kauai is the oldest and most eroded. An entirely new island called <strong>Lōʻihi</strong> is currently forming underwater off Hawaii's coast — but won't reach the surface for another ~10,000 years!</p>
+  </div>
+  <div class="joke-card">
+    <div class="jc-label">🔥 Hot Volcano Joke</div>
+    <div class="jc-q">What did the volcano say to the other volcano?</div>
+    <div class="jc-a">I lava you SO much! ❤️🌋 (Get it? Lava = Love?)</div>
+  </div>
+
+  <!-- ATMOSPHERE -->
+  <div class="topic-banner atm">
+    <div class="tb-icon">🌤️</div>
+    <div>
+      <div class="tb-title">The Atmosphere</div>
+      <div class="tb-sub">5 layers · Composition · Air pressure · Coriolis · 3 global winds · 4 fronts · 3 cloud types · Precipitation</div>
+    </div>
+  </div>
+
+  <div class="study-grid">
+    <div class="study-card atm full-card">
+      <div class="sc-header">📊 5 Layers — Highest to Lowest with KEY Facts</div>
+      <div style="overflow-x:auto">
+      <table class="wide-table atm">
+        <thead><tr><th>Layer</th><th>Height</th><th>Key Feature</th><th>Category</th></tr></thead>
+        <tbody>
+          <tr><td>🛸 <strong>Exosphere</strong></td><td>375–6,200 mi</td><td>Satellites orbit here; atoms escape into space; bounded below by thermopause</td><td>Upper</td></tr>
+          <tr><td>🔆 <strong>Thermosphere</strong></td><td>53–375 mi</td><td>Absorbs UV + X-ray radiation → LARGE temp increase with height; bounded below by mesopause</td><td>Upper</td></tr>
+          <tr><td>☄️ <strong>Mesosphere</strong></td><td>31–53 mi</td><td><strong>Meteors burn up here</strong> → shooting star trails! Bounded below by stratopause</td><td>Middle</td></tr>
+          <tr><td>🌤️ <strong>Stratosphere</strong></td><td>4–31 mi</td><td><strong>Ozone layer lives here</strong>; temp INCREASES with height (opposite of troposphere!); bounded below by tropopause</td><td>Middle</td></tr>
+          <tr><td>🌧️ <strong>Troposphere</strong></td><td>0–11 mi</td><td><strong>ALL weather occurs here</strong>; where we live; temp DECREASES with height; air density decreases with height</td><td>Lower</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">🧪 Atmosphere Composition</div>
+      <div class="sc-items">
+        <div class="sc-item"><strong>78% Nitrogen (N₂)</strong> — most abundant by far</div>
+        <div class="sc-item"><strong>21% Oxygen (O₂)</strong> — what we breathe</div>
+        <div class="sc-item"><strong>1% Argon + trace gases</strong> — ozone (O₃), CO₂, methane, neon</div>
+        <div class="sc-item"><strong>Water vapor:</strong> varies 1–4% of atmosphere</div>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">💨 Air Pressure Basics</div>
+      <div class="sc-items">
+        <div class="sc-item">The <strong>Sun</strong> causes pressure differences — heats air → expands → less dense → lower pressure</div>
+        <div class="sc-item">Warm areas = <strong>LOW pressure</strong>; Cold areas = <strong>HIGH pressure</strong></div>
+        <div class="sc-item">High-pressure air flows INTO low-pressure areas → this creates <strong>WIND!</strong></div>
+        <div class="sc-item">Air pressure <strong>decreases with altitude</strong> because air gets less dense higher up</div>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">🌍 Coriolis Effect</div>
+      <div class="sc-items">
+        <div class="sc-item">Caused by <strong>Earth's rotation</strong> — deflects wind direction in each hemisphere</div>
+        <div class="sc-item">🇺🇸 <strong>Northern Hemisphere:</strong> wind deflects to the <strong>RIGHT</strong> → storms spin <strong>counterclockwise</strong> around low pressure</div>
+        <div class="sc-item">🌏 <strong>Southern Hemisphere:</strong> wind deflects to the <strong>LEFT</strong> → storms spin <strong>clockwise</strong> around low pressure</div>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">💨 3 Major Global Wind Patterns</div>
+      <div class="sc-items">
+        <div class="sc-item">🌴 <strong>Trade Winds</strong> (~30°N/S) — warm, steady; historically used by sailing ships for trade</div>
+        <div class="sc-item">🌪️ <strong>Prevailing Westerlies</strong> (40°–60°) — move major weather systems across continents</div>
+        <div class="sc-item">🧊 <strong>Polar Easterlies</strong> (50°–60° near poles) — irregular; weak outside of winter</div>
+        <div class="sc-item">💨 <strong>Jet Stream</strong> — most POWERFUL wind belt; narrow, fast, high-altitude band</div>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">🌦️ 4 Weather Fronts</div>
+      <div class="sc-items">
+        <div class="sc-item">❄️ <strong>Cold Front</strong> — cold air pushes UNDER warm → rises QUICKLY → thunderstorms + cumulus ⛈️</div>
+        <div class="sc-item">☀️ <strong>Warm Front</strong> — warm air rises GENTLY over cold → stratus clouds, fog, steady rain 🌧️</div>
+        <div class="sc-item">⏸️ <strong>Stationary Front</strong> — neither air mass advances → prolonged clouds + precipitation for days</div>
+        <div class="sc-item">🔀 <strong>Occluded Front</strong> — cold overtakes warm → complex weather, storms 🌩️</div>
+      </div>
+    </div>
+
+    <div class="study-card atm">
+      <div class="sc-header">☁️ Clouds + Precipitation</div>
+      <div class="sc-items">
+        <div class="sc-item">📜 <strong>Stratus</strong> — layered, low (&lt;2,000m), causes <strong>RAIN</strong> 🌧️</div>
+        <div class="sc-item">⛅ <strong>Cumulus</strong> — puffy, cotton-like, below 2,000m — no rain but can → <strong>cumulonimbus (storms)</strong> ⛈️</div>
+        <div class="sc-item">🪶 <strong>Cirrus</strong> — wispy, HIGHEST (&gt;6,000m), made of <strong>ICE CRYSTALS</strong> ❄️</div>
+        <div class="sc-item">🧊 <strong>Sleet</strong> = melted snowflakes REFREEZE into ice pellets falling through cold surface air</div>
+        <div class="sc-item">⚽ <strong>Hail</strong> = water droplets carried HIGH by thunderstorm updrafts, freeze, grow heavy, fall fast</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="funfact">
+    <div class="funfact-icon">🌀</div>
+    <p><strong>Hurricane Science:</strong> The Coriolis Effect is why hurricanes in the Northern Hemisphere always spin counterclockwise, while typhoons in the Southern Hemisphere spin clockwise. Fun test: water going down a drain actually CAN spin differently depending on hemisphere — though in a bathtub the effect is tiny!</p>
+  </div>
+  <div class="joke-card">
+    <div class="jc-label">☁️ Cloud Joke</div>
+    <div class="jc-q">What did the cloud say to the lightning bolt?</div>
+    <div class="jc-a">You're really striking today! ⚡😂</div>
+  </div>
+
+</div><!-- /study -->
+
+<!-- ==================== QUIZ ==================== -->
+<div class="section" id="quiz">
+  <div class="quiz-wrap">
+    <div id="quiz-main">
+      <div class="qz-header">
+        <div class="qz-counter" id="qz-counter">Q1/30</div>
+        <div class="qz-bar-bg"><div class="qz-bar-fill" id="qz-fill" style="width:3.3%"></div></div>
+        <div class="qz-pts" id="qz-live-pts">0 pts</div>
+      </div>
+      <div class="q-card" id="q-card-el">
+        <div class="q-tag-row" id="q-tag-row"></div>
+        <div class="q-text" id="q-text-el"></div>
+        <div class="opts-col" id="q-opts-el"></div>
+        <div class="fb-box" id="q-fb-el"></div>
+      </div>
+      <div class="qz-nav">
+        <div id="q-next-fun" style="font-size:0.83rem;color:var(--muted);flex:1;max-width:460px;display:none;font-weight:600;"></div>
+        <button class="btn-go" id="q-next-btn" onclick="nextQ()" style="display:none">Next →</button>
+      </div>
+    </div>
+    <div id="quiz-done" style="display:none">
+      <div class="result-screen">
+        <div class="result-volcano" id="res-emoji">🌋</div>
+        <div class="result-pct" id="res-pct">0%</div>
+        <div class="result-grade" id="res-grade">Keep studying!</div>
+        <div class="result-joke-wrap">
+          <div class="joke-card" id="res-joke"></div>
+        </div>
+        <button class="btn-go" onclick="resetQuiz()" style="margin:0 auto;display:block;margin-top:20px">🔄 Try Again!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FLASHCARDS ==================== -->
+<div class="section" id="flash">
+  <div class="fc-controls">
+    <button class="fc-filter on" onclick="setFC('all',this)">All Topics</button>
+    <button class="fc-filter" onclick="setFC('geo',this)">⏳ Geologic</button>
+    <button class="fc-filter" onclick="setFC('vol',this)">🌋 Volcano</button>
+    <button class="fc-filter" onclick="setFC('atm',this)">🌤️ Atmosphere</button>
+    <button class="btn-outline" onclick="reshuffleFC()" style="margin-left:8px">🔀 Shuffle</button>
+    <div class="fc-matched">✅ <span id="fc-match-count">0</span>/<span id="fc-match-total">0</span></div>
+  </div>
+  <div class="fc-status-bar" id="fc-status"></div>
+  <div class="fc-grid" id="fc-grid"></div>
+</div>
+
+<!-- ==================== LIGHTNING ROUND ==================== -->
+<div class="section" id="lightning">
+  <div class="lr-wrap">
+    <div id="lr-intro-screen" class="lr-intro">
+      <div style="font-size:3.5rem">⚡</div>
+      <h2>Lightning Round!</h2>
+      <p>10 TRUE / FALSE questions. You have <strong>8 seconds</strong> each!<br>Answer fast to build your streak bonus! 🔥</p>
+      <div class="joke-card" style="max-width:400px;margin:16px auto;">
+        <div class="jc-label">🌩️ Before we start...</div>
+        <div class="jc-q">Why did the scientist bring a ladder to the atmosphere?</div>
+        <div class="jc-a">Because she heard the stratosphere was on another level! 😄📊</div>
+      </div>
+      <button class="btn-go" onclick="startLR()" style="margin-top:8px;display:inline-block">⚡ Start Lightning Round!</button>
+    </div>
+    <div id="lr-game-screen" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div class="qz-counter" id="lr-counter">Q1/10</div>
+        <div class="lr-timer-ring">
+          <svg viewBox="0 0 100 100" width="100" height="100">
+            <circle class="bg-ring" cx="50" cy="50" r="44"/>
+            <circle class="prog-ring" id="lr-ring" cx="50" cy="50" r="44"/>
+          </svg>
+          <div class="lr-timer-num" id="lr-timer">8</div>
+        </div>
+        <div class="qz-pts" id="lr-score">0 pts</div>
+      </div>
+      <div class="lr-q-card">
+        <div class="q-tag-row" id="lr-tag-row"></div>
+        <div class="lr-q-text" id="lr-q-text"></div>
+        <div class="lr-btn-row">
+          <button class="lr-tf-btn true-btn" id="lr-true-btn" onclick="answerLR(true)">✅ TRUE</button>
+          <button class="lr-tf-btn false-btn" id="lr-false-btn" onclick="answerLR(false)">❌ FALSE</button>
+        </div>
+      </div>
+      <div class="lr-streak" id="lr-streak-msg"></div>
+    </div>
+    <div id="lr-result-screen" class="lr-result" style="display:none">
+      <div style="font-size:4rem" id="lr-res-emoji">⚡</div>
+      <div class="lr-score-big" id="lr-res-score">0/10</div>
+      <div style="color:var(--muted);font-weight:700;margin:8px 0 20px;" id="lr-res-msg"></div>
+      <div class="joke-card" style="max-width:400px;margin:16px auto;">
+        <div class="jc-label">🎉 After the round...</div>
+        <div class="jc-q">Why do geologists make great musicians?</div>
+        <div class="jc-a">Because they know all about rock and ROLL! 🎸🪨</div>
+      </div>
+      <button class="btn-go" onclick="resetLR()">⚡ Play Again!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JOURNEY ==================== -->
+<div class="section" id="journey">
+  <div class="journey-wrap">
+    <div class="jrn-intro">
+      <h2>🗺️ The Science Explorer Journey</h2>
+      <p style="color:var(--muted);font-weight:600;font-size:0.9rem;margin-top:8px">Complete stops in order to unlock the next! Earn enough points and become a Science Legend! 🏆</p>
+    </div>
+    <div class="jrn-path" id="jrn-path"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal-inner">
+    <div class="modal-topic-row" id="modal-topic-row"></div>
+    <div class="modal-q-text" id="modal-q-text"></div>
+    <div class="modal-opts" id="modal-opts"></div>
+    <div class="modal-result" id="modal-result">
+      <div class="modal-emoji-big" id="modal-emoji-big"></div>
+      <div class="modal-pts-earned" id="modal-pts-earned"></div>
+      <div class="modal-explain" id="modal-explain"></div>
+      <button class="btn-go" onclick="closeModal()">Continue Journey 🗺️</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================================================
+   SCORE ENGINE
+   =================================================== */
+let totalPts=0,correctCount=0,streak=0;
+function addPts(n){
+  totalPts+=n;correctCount++;streak++;
+  updScore();
+  bump('total-pts');bump('quiz-correct-track');bump('streak-track');
+  if(n>=15&&Math.random()<0.4)confetti();
+}
+function resetStreak(){streak=0;document.getElementById('streak-track').textContent=0;}
+function updScore(){
+  document.getElementById('total-pts').textContent=totalPts;
+  document.getElementById('quiz-correct-track').textContent=correctCount;
+  document.getElementById('streak-track').textContent=streak;
+  const chip=document.getElementById('lvl-chip');
+  if(totalPts>=800)chip.textContent='🏆 Earth Science Legend';
+  else if(totalPts>=500)chip.textContent='🔭 Master Scientist';
+  else if(totalPts>=300)chip.textContent='🔬 Rock Star Researcher';
+  else if(totalPts>=150)chip.textContent='⚗️ Lab Explorer';
+  else if(totalPts>=50)chip.textContent='🧪 Science Rookie';
+  else chip.textContent='🌱 Rookie Scientist';
+}
+function bump(id){
+  const el=document.getElementById(id);
+  el.textContent=id==='total-pts'?totalPts:id==='quiz-correct-track'?correctCount:streak;
+  el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');
+}
+function confetti(){
+  const colors=['#ffd166','#06d6a0','#4cc9f0','#e63946','#ff6b9d','#9b5de5'];
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${8+Math.random()*8}px;border-radius:${Math.random()<0.5?'50%':'2px'};animation-duration:${1.5+Math.random()*1.5}s;animation-delay:${Math.random()*0.5}s;top:-20px`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+}
+
+/* ===================================================
+   TABS
+   =================================================== */
+function goTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='quiz'&&!quizInited)initQuiz();
+  if(id==='flash')reshuffleFC();
+  if(id==='journey')renderJourney();
+  if(id==='lightning'){}
+}
+
+/* ===================================================
+   QUIZ DATA — 30 QUESTIONS (harder / more complex)
+   =================================================== */
+const QS=[
+  // GEOLOGIC TIME
+  {t:'geo',d:'medium',q:'The Cambrian "Explosion" refers to what major biological event that happened about 541 million years ago?',
+   o:['A massive volcanic eruption that killed most life','A sudden, rapid diversification of most major animal body plans','The first appearance of single-celled organisms','The formation of the supercontinent Gondwana'],
+   a:1,ex:'The Cambrian Explosion was an evolutionary event where most major animal body plans appeared in a geologically SHORT time — like life had a creativity burst! 🎨',joke:'Why did the trilobite get a trophy? Because it showed up first to the Cambrian party! 🦀'},
+  {t:'geo',d:'hard',q:'Which two tectonic events happened during the Silurian Period that are both correct?',
+   o:['Gondwana formed AND the first fish with jaws appeared','North America and Europe collided AND first jawed fish appeared','Pangaea assembled AND first land plants evolved','The Atlantic Ocean formed AND first birds appeared'],
+   a:1,ex:'In the Silurian, North America and northern Europe collided, AND the first fish with jaws appeared — before this, all fish were jawless! 🐟',joke:''},
+  {t:'geo',d:'hard',q:'The Devonian Period is nicknamed the "Age of Fishes." Which ADDITIONAL major evolutionary milestone also happened in the Devonian?',
+   o:['First reptiles laid eggs on land','First flowering plants evolved','First vertebrates moved onto land as amphibians','First hominids appeared'],
+   a:2,ex:'The Devonian gave us BOTH the explosion of fish diversity AND the first vertebrates on land — lobe-finned fish evolved into the first proto-amphibians! Land conquest begins! 🦎',joke:'Why did the first amphibian go to school? To improve its LAND-guage skills! 📚'},
+  {t:'geo',d:'medium',q:'What was unique about the end-Permian extinction compared to all other mass extinctions?',
+   o:['It was caused by a meteorite impact','It wiped out ~96% of ALL species — it\'s the largest extinction ever on Earth','It only affected marine life','It happened suddenly in less than 1,000 years'],
+   a:1,ex:'The end-Permian "Great Dying" wiped out ~96% of ALL species on Earth — not just marine, but land life too. It\'s unmatched by any other extinction. Scientists still debate exact causes — likely a combo of massive volcanic eruptions, climate change, and ocean anoxia. 💀',joke:''},
+  {t:'geo',d:'hard',q:'During the Carboniferous Period, what MAJOR geographic change was occurring that would be complete by the Permian?',
+   o:['Gondwana was breaking apart into separate continents','The supercontinent Pangaea was forming','The Atlantic Ocean was widening rapidly','South America was separating from Africa'],
+   a:1,ex:'During the Carboniferous, all major landmasses were colliding to form PANGAEA, which was fully assembled by the Permian Period. This single mega-continent affected climate worldwide! 🌍',joke:''},
+  {t:'geo',d:'expert',q:'Put these periods in the correct order from OLDEST to NEWEST: Jurassic, Ordovician, Neogene, Permian',
+   o:['Jurassic → Ordovician → Permian → Neogene','Ordovician → Permian → Jurassic → Neogene','Permian → Jurassic → Ordovician → Neogene','Neogene → Permian → Jurassic → Ordovician'],
+   a:1,ex:'Ordovician (485–444 MYA) → Permian (299–252 MYA) → Jurassic (201–145 MYA) → Neogene (23–2.6 MYA). From oldest to newest! ⏳',joke:'I tried to memorize the periods... it took a geological AGE! 😂'},
+  {t:'geo',d:'hard',q:'The first MAMMALS appeared in which period, and in which ERA does that period belong?',
+   o:['Jurassic Period, Mesozoic Era','Cretaceous Period, Mesozoic Era','Triassic Period, Mesozoic Era','Pennsylvanian Period, Paleozoic Era'],
+   a:2,ex:'The first true mammals appeared in the TRIASSIC Period (252–201 MYA), the first period of the Mesozoic Era. They were tiny — no bigger than rats — and stayed that way while dinosaurs dominated! 🐀',joke:''},
+  {t:'geo',d:'medium',q:'Which life development is correctly matched with its period?',
+   o:['First birds → Cretaceous Period','First hominids → Paleogene Period','First flowering plants → Cretaceous Period','First land plants → Silurian Period'],
+   a:2,ex:'First FLOWERING PLANTS appeared in the Cretaceous Period (145–66 MYA). Note: First birds appeared in the Jurassic, first hominids in the Neogene, and first land plants in the Ordovician. 🌸',joke:''},
+  {t:'geo',d:'hard',q:'What correctly describes the Cenozoic Era\'s Neogene Period?',
+   o:['Rapid evolution of mammals after the dinosaur extinction; forests widespread','First dinosaurs; Pangaea breaking apart; warm dry climate','Modern mammals, birds and fish evolve into recognizable ancestors; first hominids; grasslands dominant','Global cooling and warming with ice ages; modern humans spread worldwide'],
+   a:2,ex:'The Neogene (23–2.6 MYA) is when mammals evolved into forms we recognize today, the FIRST HOMINIDS appeared, and grasslands replaced forests as the dominant ecosystem. 🦍',joke:''},
+  {t:'geo',d:'hard',q:'What was the CLIMATE difference between the Cambrian Period and the Ordovician ending?',
+   o:['Cambrian was cold; Ordovician was warm','Both were warm throughout with no major change','Cambrian was warm and wet with no ice caps; Ordovician ended with a MAJOR ICE AGE','Both had extensive polar ice caps and cold climates'],
+   a:2,ex:'Dramatic contrast! The Cambrian was warm, wet, no polar ice caps at all. But near the END of the Ordovician, part of Gondwana drifted over the South Pole → ice age began → triggered the mass extinction! ❄️',joke:''},
+  // VOLCANOES
+  {t:'vol',d:'medium',q:'Why does a SHIELD volcano erupt differently from a COMPOSITE volcano?',
+   o:['Shield volcanoes are located only at hot spots while composite are at divergent boundaries','Shield volcanoes have LOW viscosity lava that flows and spreads easily, while composite volcanoes have HIGH viscosity lava that traps gas and explodes','Shield volcanoes are much smaller and erupt more frequently','Composite volcanoes only erupt underwater while shield volcanoes erupt on land'],
+   a:1,ex:'It\'s ALL about viscosity! Low viscosity = lava flows like water and spreads flat (shield shape). High viscosity = lava is thick, traps gases, pressure builds → EXPLOSIVE eruption! (composite shape). 🌋',joke:'Why did the shield volcano never get into fights? It knew how to go with the FLOW! 😂'},
+  {t:'vol',d:'hard',q:'A hot spot creates a chain of volcanic islands because:',
+   o:['Multiple hot spots form simultaneously along a fault line','The hot spot itself moves along with the tectonic plate creating new islands as it goes','The hot spot is stationary but the tectonic plate moves OVER it, creating a series of volcanic islands over time','Underwater volcanoes grow until they reach the surface, then spread across the ocean floor'],
+   a:2,ex:'KEY CONCEPT: The hot spot STAYS PUT — it\'s the PLATE that moves! As the plate slowly drifts over the stationary hot spot, new volcanic islands form over time. Hawaii is the youngest island (still over the hot spot), Kauai is the oldest! 🏝️',joke:''},
+  {t:'vol',d:'medium',q:'What makes PYROCLASTIC MATERIAL different from lava?',
+   o:['Pyroclastic material is liquid and flows; lava is solid','Pyroclastic material is ALL SOLID material ejected; lava is the molten liquid rock','Pyroclastic material only forms from composite volcanoes; lava from shield volcanoes','Pyroclastic material is underground; lava is above ground'],
+   a:1,ex:'Pyroclastic material = ALL SOLID stuff blasted out (cinders, rocks, ash). Lava = the LIQUID molten rock that flows. Large pyroclastic pieces fall close to the volcano; tiny ash can travel thousands of miles on the wind! 🪨💨',joke:''},
+  {t:'vol',d:'hard',q:'A cinder cone volcano forms when:',
+   o:['Multiple layers of lava and ash build up over thousands of years of explosive eruptions','Small rock pieces called cinders accumulate around the volcanic vent during high-temperature gas-rich eruptions','Low-viscosity basaltic lava spreads outward in many flows creating a broad shape','The hot spot creates enough pressure to push lava above sea level'],
+   a:1,ex:'Cinder cone = cinders (small scoria rock pieces) pile up around the vent during short, gas-rich, high-temp eruptions. They\'re the smallest volcanoes (~100m), have steep sides, and can even form as "parasitic cones" on the sides of bigger volcanoes! 🔺',joke:'Why was the cinder cone so popular at school? It was always the OUTSTANDING one on the field! 😂'},
+  {t:'vol',d:'expert',q:'Which statement about volcano formation is MOST accurate?',
+   o:['All volcanoes only form at plate boundaries','Composite volcanoes form at divergent boundaries; shield volcanoes at convergent boundaries','Most volcanic activity is on land where we can observe it best','Composite volcanoes are mostly at convergent boundaries; shield volcanoes and hot spot volcanoes form elsewhere, and 90% of total volcanic activity is underwater'],
+   a:3,ex:'Full picture: Composite volcanoes → convergent boundaries. Shield volcanoes → hot spots/divergent. And 90% of ALL volcanic activity is UNDERWATER (mid-ocean ridges). What we see on land is just the tip of the volcanic iceberg! 🌊',joke:''},
+  {t:'vol',d:'medium',q:'What is the key difference between MAGMA and LAVA?',
+   o:['Magma is hotter than lava','Magma is molten rock underground; lava is magma that has erupted onto Earth\'s surface','Lava is underground; magma is above ground','They are the same thing — just different scientific names'],
+   a:1,ex:'Same stuff, different location! MAGMA = underground (below Earth\'s surface). LAVA = the same molten rock AFTER it erupts onto the surface. Like how it\'s "batter" in the bowl but "cake" once it\'s baked! 🎂',joke:''},
+  // ATMOSPHERE
+  {t:'atm',d:'hard',q:'Why does temperature INCREASE with altitude in the STRATOSPHERE, but DECREASE in the TROPOSPHERE?',
+   o:['Stratosphere is closer to the sun so it gets more solar radiation directly','Stratosphere contains the ozone layer which ABSORBS UV radiation and produces heat; troposphere is heated from below by Earth\'s surface','Stratosphere has denser air that retains more heat than the thin air in the troposphere','Wind patterns in the stratosphere trap heat while troposphere winds dissipate heat upward'],
+   a:1,ex:'This is a KEY difference! Troposphere is heated from Earth\'s surface → colder higher up. But stratosphere has the OZONE LAYER which absorbs UV and converts it to HEAT → warmer higher up! This temperature inversion is also why planes fly at that altitude — it\'s stable! ✈️',joke:''},
+  {t:'atm',d:'medium',q:'What physically CAUSES wind?',
+   o:['Earth\'s rotation alone creates all winds','Temperature differences cause air pressure differences; high-pressure air flows into low-pressure areas creating wind','The jet stream pushes all other wind patterns around the globe','Clouds moving through the atmosphere create wind as they displace air'],
+   a:1,ex:'Chain of cause and effect: Sun heats air unevenly → warm areas expand and become LESS dense → lower pressure. Cold areas = MORE dense → higher pressure. Air naturally moves from HIGH to LOW pressure to equalize → that\'s WIND! 💨',joke:'Why did the wind get a job as a teacher? Because it was great at BLOWING minds! 😂'},
+  {t:'atm',d:'hard',q:'What distinguishes SLEET from HAIL in terms of how they form?',
+   o:['Sleet forms in summer, hail forms in winter','Sleet is larger than hail and forms from frozen rain; hail is small and forms from snow','Sleet forms when partially melted snowflakes refreeze near the surface (warm front approach); hail forms when updrafts in thunderstorms carry water droplets UP to freeze and grow','Both form the same way — the terms are interchangeable in different regions'],
+   a:2,ex:'Two very different processes! SLEET = temperature inversion near warm fronts. Snow melts partway through warm layer, then REFREEZES in cold surface air. HAIL = thunderstorm physics. Updrafts carry water UP high to freeze, droplets get coated in ice layers, until too heavy to stay up! 🧊',joke:''},
+  {t:'atm',d:'hard',q:'The Coriolis Effect means that in the NORTHERN Hemisphere, a LOW pressure system has winds that spin:',
+   o:['Clockwise, because high-pressure air flows from right to left','Counterclockwise, because wind is deflected to the RIGHT as it flows inward toward low pressure','Counterclockwise only in summer, clockwise in winter','In straight lines directly toward the low pressure center'],
+   a:1,ex:'Wind flows toward low pressure to equalize. But Coriolis deflects it RIGHT in N. Hemisphere. So instead of going straight in, it curves RIGHT → creates COUNTERCLOCKWISE spin around lows. This is why hurricanes and cyclones in the Northern Hemisphere always spin counterclockwise! 🌀',joke:''},
+  {t:'atm',d:'medium',q:'Which cloud type MOST LIKELY produces rain, and at what altitude does it form?',
+   o:['Cirrus clouds — above 6,000 meters — produce heavy rain','Cumulus clouds — below 2,000 meters — regularly cause rain showers','Stratus clouds — below 2,000 meters — are most associated with rain','Cumulonimbus clouds — at 6,000 meters — only produce snow'],
+   a:2,ex:'STRATUS = low-lying layered clouds under 2,000m that spread across the sky and are most associated with rain or precipitation. Cirrus are ice crystals (no rain). Cumulus are puffy but usually no rain unless they grow into cumulonimbus (storms)! ☁️',joke:''},
+  {t:'atm',d:'expert',q:'What is the correct order of atmospheric layers from Earth\'s surface going OUTWARD?',
+   o:['Troposphere → Mesosphere → Stratosphere → Thermosphere → Exosphere','Troposphere → Stratosphere → Mesosphere → Thermosphere → Exosphere','Stratosphere → Troposphere → Mesosphere → Exosphere → Thermosphere','Troposphere → Stratosphere → Thermosphere → Mesosphere → Exosphere'],
+   a:1,ex:'The mnemonic: "The Silly Monkeys Throw Eggs" — Troposphere, Stratosphere, Mesosphere, Thermosphere, Exosphere! Going from Earth\'s surface outward to space. 🛸',joke:'Why did the student fail the atmosphere test? They couldn\'t remember all the LAYERS of information! 😂'},
+  {t:'atm',d:'hard',q:'Trade Winds historically allowed ships to sail from Europe to North/South America. What makes them reliable for this?',
+   o:['They blow east toward America at about 60° latitude — pushing ships westward','They are warm, steady winds found about 30° north and south of the equator that blow consistently westward toward the Americas','They are the strongest wind belt in both hemispheres reaching hurricane speeds','They are polar winds that flow along the equator providing stable navigation routes'],
+   a:1,ex:'Trade Winds blow at ~30°N/S of the equator, are WARM and STEADY (reliable!), and blow westward toward the Americas. Columbus literally used Trade Winds in 1492! The name "trade winds" came from their use in oceanic trade routes. ⛵',joke:''},
+  {t:'atm',d:'medium',q:'An OCCLUDED FRONT forms when:',
+   o:['Two warm air masses meet each other and neither can advance','A stationary front begins moving slowly in one direction','A cold front overtakes a warm front, creating complex layered weather','Warm air gently slides over a cold air mass at a shallow angle'],
+   a:2,ex:'Occluded = "cut off." When a fast-moving COLD FRONT catches up to and OVERTAKES a slower warm front, the warm air gets lifted off the ground entirely (occluded). Result: complex weather with potential rain and storms! 🌩️',joke:''},
+  {t:'atm',d:'hard',q:'What is an AIR MASS and what determines its characteristics?',
+   o:['A moving weather front between warm and cold regions','A large volume of air with uniform temperature and moisture throughout, formed when air stays over one region for a long time taking on that area\'s characteristics','The invisible layer of gases in the stratosphere','A high-altitude wind current in the jet stream'],
+   a:1,ex:'Air masses are like giant invisible sponges soaking up the characteristics of where they form! Continental (land) = DRY. Maritime (ocean) = MOIST. Polar = COLD. Tropical = WARM. Mix those together and you get all our different weather types! 💨',joke:''},
+  {t:'atm',d:'expert',q:'What is the correct composition of DRY air (with 1% water vapor)?',
+   o:['50% Nitrogen, 49% Oxygen, 1% Argon and trace gases','78% Nitrogen, 21% Oxygen, 1% Argon and other trace gases','65% Nitrogen, 30% Oxygen, 5% Carbon dioxide','90% Nitrogen, 9% Oxygen, 1% trace gases'],
+   a:1,ex:'78-21-1! Nitrogen dominates at 78%, Oxygen (what we breathe) at 21%, and just 1% for Argon and ALL other trace gases combined — including ozone, CO₂, methane, neon. Despite CO₂\'s climate impact, it\'s only 0.04% of the atmosphere! 🧪',joke:'Why is nitrogen so antisocial? Because it doesn\'t BOND with just anyone! 😂'},
+  {t:'atm',d:'hard',q:'Cirrus clouds are made of ice crystals. Why does this happen given where they form?',
+   o:['Cirrus clouds are close to the sun so the heat converts water vapor directly to ice','Cirrus clouds form at very HIGH altitudes (above 6,000m) where temperatures are so cold that water exists only as ice crystals, not liquid droplets','Cirrus clouds only form in winter when temperatures throughout the atmosphere are below freezing','Ice crystal formation in cirrus is caused by the jet stream freezing water molecules'],
+   a:1,ex:'At altitudes ABOVE 6,000 meters (almost 4 miles up!), temperatures are so extreme — well below -40°C — that any water exists ONLY as ice. So cirrus clouds are entirely made of ice crystals, not liquid droplets. That\'s why they look thin and wispy! 🪶❄️',joke:''},
+  {t:'geo',d:'expert',q:'Which statement correctly distinguishes the Paleogene from the Neogene Period in the Cenozoic Era?',
+   o:['Paleogene: first hominids appear; Neogene: rapid mammal evolution begins after dinosaurs','Paleogene: rapid mammal/bird/plant evolution after dinosaur extinction (66–23 MYA); Neogene: mammals become modern, first hominids appear, grasslands dominate (23–2.6 MYA)','Paleogene: ice ages every 100,000 years; Neogene: warm stable climate worldwide','Both periods are identical in terms of life development — the split is purely based on rock layers'],
+   a:1,ex:'Clear distinction: PALEOGENE is the "recovery period" — life expands rapidly after the dinosaur extinction (66–23 MYA). NEOGENE is "modernization" — life evolves into forms we recognize today, plus the first hominids! (23–2.6 MYA). 🐘🦍',joke:''},
+  {t:'vol',d:'expert',q:'Why does COMPOSITE VOLCANO lava create more dangerous and explosive eruptions than shield volcano lava?',
+   o:['Composite volcano lava is much hotter than shield volcano lava and instantly vaporizes water','High viscosity lava in composite volcanoes resists flow and TRAPS dissolved gases; pressure builds until it erupts explosively rather than flowing out gently','Composite volcanoes sit over larger magma chambers that contain more material','Shield volcano lava is wet and composite lava is dry, causing different eruption styles'],
+   a:1,ex:'Viscosity is the key! Composite = THICK lava (like cold honey) → doesn\'t flow → traps dissolved gases (CO₂, H₂O vapor, SO₂) → pressure builds and builds → BOOM! Explosive eruption. Shield = runny lava → gas escapes easily → gentle flowing eruption. Same gases, completely different outcomes! 💥',joke:'What did the composite volcano say to the shield volcano? Quit FLOWING around and take things more seriously! 😂'},
+  {t:'geo',d:'hard',q:'What correctly describes the PRECAMBRIAN\'s significance?',
+   o:['The Precambrian is one of the 3 main eras lasting about 500 million years','The Precambrian is a pre-era covering Earth\'s formation to 541 MYA — the LONGEST geological eon at approximately 4 billion years — containing only simple life forms','The Precambrian only lasted until complex plants evolved and is the shortest geological division','The Precambrian overlaps with the beginning of the Paleozoic Era'],
+   a:1,ex:'The Precambrian is MASSIVE — from Earth\'s formation (4,600 MYA) to 541 MYA = about 4 BILLION years = ~88% of all Earth history! And during almost all of that vast time, life was just simple single-celled organisms. Complex multicellular life is actually very recent! 🌍',joke:''},
+];
+
+let qIdx=0,qScore=0,qAnswered=false,quizInited=false;
+function initQuiz(){quizInited=true;qIdx=0;qScore=0;renderQ();}
+function renderQ(){
+  try{
+    qAnswered=false;
+    const q=QS[qIdx];
+    if(!q){console.error('No question at index',qIdx);return;}
+    document.getElementById('qz-counter').textContent='Q'+(qIdx+1)+'/30';
+    document.getElementById('qz-live-pts').textContent=qScore+' pts';
+    document.getElementById('qz-fill').style.width=(((qIdx+1)/30)*100)+'%';
+    const card=document.getElementById('q-card-el');
+    card.className='q-card '+(q.t||'geo');
+    // Difficulty — fully explicit, no split needed
+    const dInfo={
+      easy:{cls:'diff-easy',lbl:'★ Easy'},
+      med:{cls:'diff-med',lbl:'★★ Medium'},
+      medium:{cls:'diff-med',lbl:'★★ Medium'},
+      hard:{cls:'diff-hard',lbl:'★★★ Hard'},
+      expert:{cls:'diff-expert',lbl:'★★★★ Expert'}
+    };
+    const tInfo={
+      geo:{cls:'tg-geo',lbl:'⏳ Geologic Time'},
+      vol:{cls:'tg-vol',lbl:'🌋 Volcanoes'},
+      atm:{cls:'tg-atm',lbl:'🌤️ Atmosphere'}
+    };
+    const di=dInfo[q.d]||dInfo.medium;
+    const ti=tInfo[q.t]||tInfo.geo;
+    document.getElementById('q-tag-row').innerHTML=
+      '<span class="q-topic-tag '+ti.cls+'">'+ti.lbl+'</span> '+
+      '<span class="diff-badge '+di.cls+'">'+di.lbl+'</span>';
+    document.getElementById('q-text-el').textContent=q.q;
+    const L=['A','B','C','D'];
+    document.getElementById('q-opts-el').innerHTML=q.o.map(function(o,i){
+      return '<button class="opt-btn" onclick="pickAns('+i+')">'
+        +'<span class="opt-letter">'+L[i]+'</span>'
+        +o.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        +'</button>';
+    }).join('');
+    document.getElementById('q-fb-el').className='fb-box';
+    document.getElementById('q-fb-el').style.display='none';
+    document.getElementById('q-next-btn').style.display='none';
+    document.getElementById('q-next-fun').style.display='none';
+  }catch(err){
+    console.error('renderQ failed at Q'+(qIdx+1)+':',err);
+    document.getElementById('q-text-el').textContent='Error loading question. Try refreshing.';
+  }
+}
+function pickAns(i){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=QS[qIdx];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('q-fb-el');
+  const pts=q.d==='easy'?8:(q.d==='med'||q.d==='medium')?10:q.d==='hard'?12:15;
+  if(i===q.a){
+    btns[i].classList.add('correct');
+    qScore+=pts;addPts(pts);
+    fb.className='fb-box correct';
+    fb.innerHTML=`<span>✅</span><div><strong>Correct! +${pts} pts!</strong><br>${q.ex}${q.joke?`<div class="fb-joke">😄 ${q.joke}</div>`:''}</div>`;
+  }else{
+    btns[i].classList.add('wrong');btns[q.a].classList.add('correct');
+    resetStreak();
+    fb.className='fb-box wrong';
+    fb.innerHTML=`<span>❌</span><div><strong>Not quite — correct answer: ${q.o[q.a]}</strong><br>${q.ex}${q.joke?`<div class="fb-joke">😄 ${q.joke}</div>`:''}</div>`;
+  }
+  document.getElementById('qz-live-pts').textContent=`${qScore} pts`;
+  fb.style.display='flex';
+  document.getElementById('q-next-btn').style.display='block';
+  const nf=document.getElementById('q-next-fun');
+  if(streak>=3){nf.textContent=`🔥 ${streak}-in-a-row streak! Keep going!`;nf.style.display='block';}
+  else{nf.style.display='none';}
+}
+function nextQ(){
+  qIdx++;
+  if(qIdx>=QS.length)showQResult();
+  else renderQ();
+}
+function showQResult(){
+  document.getElementById('quiz-main').style.display='none';
+  document.getElementById('quiz-done').style.display='block';
+  const pct=Math.round((qScore/(30*10))*100);
+  let emoji,grade,jokeQ,jokeA;
+  if(pct>=90){emoji='🏆';grade='Absolutely INCREDIBLE! Test Ready! 💯';jokeQ='Why did the earth scientist ace every test?';jokeA='Because she had OUTSTANDING knowledge on every layer! 🌍';}
+  else if(pct>=75){emoji='🌟';grade='Amazing work! Review a couple spots and you\'re UNSTOPPABLE!';jokeQ='What did the teacher say to the geologic time chart?';jokeA='You really know how to make time FLY! ⏳😂';}
+  else if(pct>=60){emoji='📚';grade='Good effort! A little more review and you\'ve got this!';jokeQ='Why did the student study the atmosphere before bed?';jokeA='Because they heard there would be a lot of PRESSURE! 😅';}
+  else{emoji='💪';grade='Keep going — the Study Guide and Lightning Round will help! You\'ve got this!';jokeQ='What did the volcano say after a tough quiz?';jokeA='I just need to ERUPT with more study time! 🌋';}
+  document.getElementById('res-emoji').textContent=emoji;
+  document.getElementById('res-pct').textContent=`${qScore} pts`;
+  document.getElementById('res-grade').textContent=grade;
+  document.getElementById('res-joke').innerHTML=`<div class="jc-label">🎉 Finish Joke!</div><div class="jc-q">${jokeQ}</div><div class="jc-a">${jokeA}</div>`;
+  confetti();
+}
+function resetQuiz(){
+  document.getElementById('quiz-main').style.display='block';
+  document.getElementById('quiz-done').style.display='none';
+  qIdx=0;qScore=0;qAnswered=false;renderQ();
+}
+
+/* ===================================================
+   FLASHCARDS
+   =================================================== */
+const CARDS=[
+  {id:'g1',t:'geo',front:'⏳ 3 ERAS',back:'Paleozoic → Mesozoic → Cenozoic\n(Oldest to Newest)'},
+  {id:'g2',t:'geo',front:'🦴 BACKBONE',back:'First vertebrates:\nCambrian Period\n(jawless fish)'},
+  {id:'g3',t:'geo',front:'🥚 EGGSHELLS',back:'First shelled eggs:\nMississippian Period\n(first reptiles)'},
+  {id:'g4',t:'geo',front:'🌸 FRUIT',back:'First flowering plants:\nCretaceous Period\n(Mesozoic Era)'},
+  {id:'g5',t:'geo',front:'🦎 LAND DWELLING',back:'First land vertebrates:\nDevonian Period\n(amphibians)'},
+  {id:'g6',t:'geo',front:'🦍 HOMINIDS',back:'First hominids:\nNeogene Period\n(Cenozoic Era)'},
+  {id:'g7',t:'geo',front:'💀 96%',back:'END-PERMIAN\n"The Great Dying"\nLargest extinction ever'},
+  {id:'g8',t:'geo',front:'☄️ DINOS END',back:'Cretaceous-end meteorite\n~80% of life extinct\nChicxulub crater'},
+  {id:'g9',t:'geo',front:'💀 80%',back:'END-ORDOVICIAN\n~80% marine species\nCaused by ice age'},
+  {id:'g10',t:'geo',front:'🐟 CAMBRIAN',back:'Cambrian Explosion\nMost animal body plans\nappear rapidly 541 MYA'},
+  {id:'v1',t:'vol',front:'🌋 MAGMA vs LAVA',back:'Magma = underground\nLava = erupted to surface\nSame stuff, diff location!'},
+  {id:'v2',t:'vol',front:'🍯 VISCOSITY',back:'HIGH = thick → explosive\nLOW = runny → flows out\nKey to eruption type!'},
+  {id:'v3',t:'vol',front:'🪨 PYROCLASTIC',back:'ALL solid material\nfrom eruption\nLarge=falls close; Ash=travels far'},
+  {id:'v4',t:'vol',front:'🛡️ SHIELD',back:'Broadest + LARGEST type\nLow viscosity basaltic lava\nNOT explosive; flows out'},
+  {id:'v5',t:'vol',front:'🔺 CINDER CONE',back:'Smallest (~100m)\nHigh-temp gas-rich\nSHORT eruption cycles'},
+  {id:'v6',t:'vol',front:'🏔️ COMPOSITE',back:'Large + steep-sided\nHIGH viscosity = EXPLOSIVE\nConvergent boundaries'},
+  {id:'v7',t:'vol',front:'🫧 HOT SPOT',back:'STATIONARY magma plume\nPlate moves OVER it\n→ creates island chains!'},
+  {id:'v8',t:'vol',front:'90% 🌊',back:'90% of all volcanic activity\nhappens UNDERWATER\n(mid-ocean ridges)'},
+  {id:'a1',t:'atm',front:'🌧️ TROPOS',back:'Troposphere = lowest\nALL weather occurs here\nTemp DECREASES going up'},
+  {id:'a2',t:'atm',front:'🌤️ STRATOS',back:'Stratosphere: OZONE layer\nTemp INCREASES going up\nBounded by tropopause'},
+  {id:'a3',t:'atm',front:'☄️ MESOS',back:'Mesosphere: METEORS\nburn up here (shooting stars!)\nBounded by stratopause'},
+  {id:'a4',t:'atm',front:'🔆 THERMOS',back:'Thermosphere: absorbs\nUV + X-ray radiation\nBounded by mesopause'},
+  {id:'a5',t:'atm',front:'🛸 EXOS',back:'Exosphere: outermost\nSatellites orbit here\nAtoms escape to space'},
+  {id:'a6',t:'atm',front:'78% N₂',back:'Nitrogen = 78%\nOxygen = 21%\nArgon+trace = 1%'},
+  {id:'a7',t:'atm',front:'❄️⛈️ FRONTS',back:'Cold=thunderstorms\nWarm=steady rain+fog\nStationary=days of rain\nOccluded=complex storms'},
+  {id:'a8',t:'atm',front:'☁️ 3 CLOUDS',back:'Stratus=rain (low)\nCumulus=puffy (low)\nCirrus=ice crystals (HIGH)'},
+  {id:'a9',t:'atm',front:'🌀 CORIOLIS',back:'N.Hemisphere: deflects RIGHT\ncounterclockwise low press.\nS.Hemisphere: deflects LEFT'},
+  {id:'a10',t:'atm',front:'💨 3 WINDS',back:'Trade Winds ~30°\nPrevailing Westerlies 40-60°\nPolar Easterlies near poles'},
+];
+let fcDeck='all',fcSelected=null,fcMatched=new Set(),fcCards=[];
+function setFC(d,btn){
+  fcDeck=d;document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  reshuffleFC();
+}
+function reshuffleFC(){
+  fcSelected=null;fcMatched=new Set();
+  document.getElementById('fc-status').textContent='';
+  document.getElementById('fc-match-count').textContent=0;
+  let f=fcDeck==='all'?CARDS:CARDS.filter(c=>c.t===fcDeck);
+  fcCards=[...f].sort(()=>Math.random()-0.5);
+  document.getElementById('fc-match-total').textContent=fcCards.length;
+  renderFCGrid();
+}
+function renderFCGrid(){
+  document.getElementById('fc-grid').innerHTML=fcCards.map((c,i)=>
+    `<div class="fc-wrap" id="fw-${c.id}" onclick="tapFC('${c.id}')">
+      <div class="fc-inner">
+        <div class="fc-face">${c.front}</div>
+        <div class="fc-back">${c.back}</div>
+      </div>
+    </div>`).join('');
+}
+function tapFC(id){
+  const el=document.getElementById(`fw-${id}`);
+  if(!el||fcMatched.has(id))return;
+  const card=fcCards.find(c=>c.id===id);
+  if(!card)return;
+  if(!el.classList.contains('open')){el.classList.add('open');}
+  el.classList.toggle('sel');
+  if(!fcSelected){fcSelected={id,card};}
+  else{
+    if(fcSelected.id===id){el.classList.remove('sel');fcSelected=null;return;}
+    const prev=document.getElementById(`fw-${fcSelected.id}`);
+    if(card.t===fcSelected.card.t&&!fcMatched.has(fcSelected.id)){
+      el.classList.add('hit');prev.classList.add('hit');
+      setTimeout(()=>{el.classList.add('done');prev.classList.add('done');el.classList.remove('hit','sel');prev.classList.remove('hit','sel');},700);
+      fcMatched.add(id);fcMatched.add(fcSelected.id);
+      addPts(5);
+      document.getElementById('fc-match-count').textContent=fcMatched.size;
+      document.getElementById('fc-status').textContent=`🎉 Topic match! +5 pts! Streak: ${streak} 🔥`;
+      if(fcMatched.size>=fcCards.length){document.getElementById('fc-status').textContent='🏆 All cards studied! Champion! 🎊';confetti();}
+      fcSelected=null;
+    }else{
+      el.classList.add('miss');if(prev)prev.classList.add('miss');
+      document.getElementById('fc-status').textContent='❌ Different topics — keep flipping!';
+      resetStreak();
+      setTimeout(()=>{
+        el.classList.remove('open','sel','miss');
+        if(prev)prev.classList.remove('open','sel','miss');
+        fcSelected=null;
+        document.getElementById('fc-status').textContent='';
+      },900);
+    }
+  }
+}
+
+/* ===================================================
+   LIGHTNING ROUND
+   =================================================== */
+const LR_QS=[
+  {t:'geo',q:'The Precambrian is the LONGEST geological eon on Earth.',ans:true,ex:'True! It covers ~4 billion years — about 88% of all Earth history!'},
+  {t:'vol',q:'About 90% of all volcanic activity happens on land where we can observe it.',ans:false,ex:'False! 90% happens UNDERWATER — mostly along mid-ocean ridges!'},
+  {t:'atm',q:'The troposphere is where ALL weather on Earth occurs.',ans:true,ex:'True! The troposphere is the lowest layer and home to all weather phenomena.'},
+  {t:'geo',q:'The first vertebrates (animals with backbones) appeared in the Ordovician Period.',ans:false,ex:'False! First vertebrates (jawless fish) appeared in the CAMBRIAN Period.'},
+  {t:'vol',q:'Shield volcanoes are the LARGEST type of volcano because their low-viscosity lava spreads out widely.',ans:true,ex:'True! Low viscosity = lava flows far and wide = broad, flat, huge shield shape.'},
+  {t:'atm',q:'In the Northern Hemisphere, the Coriolis Effect deflects wind to the LEFT.',ans:false,ex:'False! In the Northern Hemisphere, wind deflects to the RIGHT (leftward in Southern Hemisphere).'},
+  {t:'geo',q:'The end-Permian mass extinction wiped out approximately 96% of all species on Earth.',ans:true,ex:'True! "The Great Dying" is the largest extinction event in Earth\'s history — 96% of all species!'},
+  {t:'atm',q:'Cirrus clouds form at low altitudes and are the most likely to cause rain.',ans:false,ex:'False! Cirrus clouds form at HIGH altitudes (>6,000m) and are made of ICE CRYSTALS. STRATUS clouds cause rain!'},
+  {t:'vol',q:'A hot spot stays STATIONARY while the tectonic plate moves over it, creating a chain of volcanic islands.',ans:true,ex:'True! Hawaii is the perfect example — the hot spot is fixed, the Pacific Plate moves northwest over it.'},
+  {t:'atm',q:'The stratosphere\'s temperature INCREASES with altitude because of the ozone layer absorbing UV radiation.',ans:true,ex:'True! The ozone layer absorbs UV radiation and converts it to heat — opposite of the troposphere!'},
+];
+let lrIdx=0,lrScore=0,lrStreak=0,lrTimer=null,lrTimeLeft=8;
+const CIRC=2*Math.PI*44;
+function startLR(){
+  document.getElementById('lr-intro-screen').style.display='none';
+  document.getElementById('lr-game-screen').style.display='block';
+  document.getElementById('lr-result-screen').style.display='none';
+  lrIdx=0;lrScore=0;lrStreak=0;renderLRQ();
+}
+function renderLRQ(){
+  if(lrIdx>=LR_QS.length){showLRResult();return;}
+  const q=LR_QS[lrIdx];
+  document.getElementById('lr-counter').textContent=`Q${lrIdx+1}/10`;
+  document.getElementById('lr-score').textContent=`${lrScore} pts`;
+  const tInfo={geo:{cls:'tg-geo',lbl:'⏳ Geologic'},vol:{cls:'tg-vol',lbl:'🌋 Volcanoes'},atm:{cls:'tg-atm',lbl:'🌤️ Atmosphere'}};
+  const ti=tInfo[q.t]||tInfo.geo;
+  document.getElementById('lr-tag-row').innerHTML='<span class="q-topic-tag '+ti.cls+'">'+ti.lbl+'</span>';
+  document.getElementById('lr-q-text').textContent=q.q;
+  document.getElementById('lr-streak-msg').textContent='';
+  document.getElementById('lr-true-btn').className='lr-tf-btn true-btn';
+  document.getElementById('lr-false-btn').className='lr-tf-btn false-btn';
+  document.getElementById('lr-true-btn').disabled=false;
+  document.getElementById('lr-false-btn').disabled=false;
+  lrTimeLeft=8;
+  updateTimerDisplay(8,8);
+  clearInterval(lrTimer);
+  lrTimer=setInterval(()=>{
+    lrTimeLeft--;
+    updateTimerDisplay(lrTimeLeft,8);
+    if(lrTimeLeft<=0){clearInterval(lrTimer);timeoutLR();}
+  },1000);
+}
+function updateTimerDisplay(t,max){
+  const offset=CIRC*(1-t/max);
+  const ring=document.getElementById('lr-ring');
+  ring.style.strokeDashoffset=offset;
+  ring.style.stroke=t<=3?'#e63946':t<=5?'#ffd166':'#06d6a0';
+  document.getElementById('lr-timer').textContent=t;
+}
+function answerLR(ans){
+  clearInterval(lrTimer);
+  const q=LR_QS[lrIdx];
+  document.getElementById('lr-true-btn').disabled=true;
+  document.getElementById('lr-false-btn').disabled=true;
+  if(ans){document.getElementById('lr-true-btn').classList.add(q.ans===true?'correct':'wrong');}
+  else{document.getElementById('lr-false-btn').classList.add(q.ans===false?'correct':'wrong');}
+  if(ans===q.ans){
+    lrStreak++;const pts=10+lrStreak*2;lrScore+=pts;addPts(pts);
+    document.getElementById('lr-streak-msg').textContent=lrStreak>=3?`🔥 ${lrStreak}-streak! +${pts} pts!`:`✅ Correct! +${pts} pts — ${q.ex}`;
+  }else{
+    lrStreak=0;resetStreak();
+    document.getElementById('lr-streak-msg').textContent=`❌ Incorrect! ${q.ex}`;
+  }
+  document.getElementById('lr-score').textContent=`${lrScore} pts`;
+  setTimeout(()=>{lrIdx++;renderLRQ();},1800);
+}
+function timeoutLR(){
+  const q=LR_QS[lrIdx];
+  lrStreak=0;resetStreak();
+  document.getElementById('lr-streak-msg').textContent=`⏰ Time\'s up! Answer: ${q.ans?'TRUE':'FALSE'} — ${q.ex}`;
+  document.getElementById('lr-true-btn').disabled=true;
+  document.getElementById('lr-false-btn').disabled=true;
+  setTimeout(()=>{lrIdx++;renderLRQ();},2000);
+}
+function showLRResult(){
+  document.getElementById('lr-game-screen').style.display='none';
+  document.getElementById('lr-result-screen').style.display='block';
+  const pct=Math.round(lrScore/100*100);
+  let em,msg;
+  if(pct>=85){em='⚡';msg='Lightning fast AND lightning smart! 🏆';}
+  else if(pct>=65){em='🌟';msg='Great speed and knowledge!';}
+  else{em='💪';msg='Speed training complete — try again!';}
+  document.getElementById('lr-res-emoji').textContent=em;
+  document.getElementById('lr-res-score').textContent=`${lrScore} pts`;
+  document.getElementById('lr-res-msg').textContent=msg;
+  if(pct>=85)confetti();
+}
+function resetLR(){
+  document.getElementById('lr-intro-screen').style.display='block';
+  document.getElementById('lr-game-screen').style.display='none';
+  document.getElementById('lr-result-screen').style.display='none';
+}
+
+/* ===================================================
+   JOURNEY MAP
+   =================================================== */
+const STOPS=[
+  {id:'s1',type:'jgeo',icon:'🌍',title:'Earth\'s Deep Time',req:0,pts:20,
+   q:'The Precambrian covers from Earth\'s formation to 541 MYA. What FRACTION of Earth\'s history is this roughly?',
+   o:['About 25% of Earth\'s history','About 50% of Earth\'s history','About 88% — nearly all of Earth\'s history','About 10% — just the early part'],
+   a:2,desc:'Uncover Earth\'s longest chapter!',
+   ex:'The Precambrian = ~4 billion years out of ~4.6 billion total = 88% of all geologic time! Life was mostly single-celled for nearly all of it. 🤯',
+   fun:'🦠 Single-celled bacteria dominated Earth for over 3 BILLION years before complex life appeared!'},
+  {id:'s2',type:'jgeo',icon:'🐟',title:'Cambrian Explosion',req:15,pts:25,
+   q:'The Cambrian Explosion (~541 MYA) is significant because:',
+   o:['It was the biggest volcanic eruption in Earth\'s history','Most major animal body plans appeared suddenly in geologic time','The first land plants evolved from marine algae','Pangaea broke apart releasing trapped marine creatures'],
+   a:1,desc:'Life got creative 541 million years ago!',
+   ex:'Life went from simple to complex RAPIDLY — most animal body plans appeared in just ~25 million years. That sounds long but it\'s fast by geologic standards! 🐚',
+   fun:'🦀 Trilobites were the "insects of the sea" — they dominated the Cambrian and survived for over 270 million years!'},
+  {id:'s3',type:'jvol',icon:'🌋',title:'Volcano HQ',req:35,pts:25,
+   q:'What is the CORRECT order of eruption violence (least to most explosive)?',
+   o:['Composite → Shield → Cinder Cone','Shield → Cinder Cone → Composite','Cinder Cone → Composite → Shield','All three are equally violent'],
+   a:1,desc:'From gentle flows to epic explosions!',
+   ex:'Shield volcanoes have low-viscosity lava that flows out gently. Cinder cones have moderate gas-rich eruptions. Composite volcanoes have HIGH viscosity lava trapping gas → most EXPLOSIVE! 🌋',
+   fun:'🏔️ Mount St. Helens (1980) is a composite volcano — it blew off 1,300 feet from its peak in a single explosion!'},
+  {id:'s4',type:'jgeo',icon:'🦕',title:'The Mesozoic Era',req:55,pts:30,
+   q:'What is the correct ORDER of the 3 Mesozoic periods from oldest to newest?',
+   o:['Jurassic → Triassic → Cretaceous','Cretaceous → Jurassic → Triassic','Triassic → Jurassic → Cretaceous','Triassic → Cretaceous → Jurassic'],
+   a:2,desc:'The Age of Dinosaurs unfolds!',
+   ex:'Triassic (252–201 MYA) → Jurassic (201–145 MYA) → Cretaceous (145–66 MYA). Dinosaurs first appeared in the Triassic, ruled the Jurassic, and were wiped out at the end of the Cretaceous! 🦖',
+   fun:'🐦 Birds ARE dinosaurs! Modern birds evolved directly from theropod dinosaurs — so dinosaurs aren\'t truly extinct!'},
+  {id:'s5',type:'jatm',icon:'🌤️',title:'Atmosphere Layers',req:80,pts:25,
+   q:'You\'re in a meteor shower watching "shooting stars." The meteors are burning up in which layer?',
+   o:['Troposphere','Stratosphere','Mesosphere','Thermosphere'],
+   a:2,desc:'From the ground to outer space!',
+   ex:'Meteors burn up in the MESOSPHERE (31–53 miles up) creating those beautiful fiery trails! The mesosphere is the coldest atmospheric layer at its top (-90°C) but meteors are so fast the friction heats them to burn! ☄️',
+   fun:'🌠 On a clear night, most "shooting stars" you see are meteors no bigger than a grain of sand!'},
+  {id:'s6',type:'jvol',icon:'🫧',title:'Hot Spots & Hawaii',req:100,pts:25,
+   q:'The Hawaiian Island chain gets OLDER as you travel northwest. This is because:',
+   o:['Volcanic activity started in the northwest and spread southeast','The hot spot moves northwest slowly over time','The Pacific Plate moves northwest over a STATIONARY hot spot, creating progressively older islands','Underwater volcanic activity caused all islands to form simultaneously then drift apart'],
+   a:2,desc:'Island chains hold tectonic secrets!',
+   ex:'Hot spot DOESN\'T move — it\'s fixed! The Pacific Plate moves NW at about 10 cm/year. Each time a new section of plate moves over the hot spot, a new island forms. The Big Island is newest; Kauai is oldest and most eroded! 🏝️',
+   fun:'🌊 The underwater volcano Lōʻihi is forming RIGHT NOW southeast of the Big Island — but won\'t emerge for ~10,000 years!'},
+  {id:'s7',type:'jatm',icon:'💨',title:'Winds & Fronts',req:120,pts:30,
+   q:'A warm front approaching produces which of these specific weather patterns?',
+   o:['Sudden thunderstorms and rapid temperature drops within hours','Strong straight-line winds with no precipitation','Gradually thickening stratus clouds followed by steady rain and possible fog','Alternating sunshine and heavy snow showers'],
+   a:2,desc:'Master weather prediction like a meteorologist!',
+   ex:'Warm fronts = warm air GENTLY rises over cold air → gradual cloud buildup → stratus/nimbostratus → steady rain, possibly fog. Unlike cold fronts which hit fast, warm fronts approach slowly and produce prolonged steady precipitation! 🌧️',
+   fun:'⛅ A skilled meteorologist can predict weather up to 7 days in advance by tracking approaching fronts!'},
+  {id:'s8',type:'jgeo',icon:'💀',title:'Great Extinctions',req:145,pts:30,
+   q:'Which correctly ranks the 3 major extinctions from SMALLEST to LARGEST percentage of species lost?',
+   o:['Ordovician (80%) → Cretaceous (80%) → Permian (96%)','Cretaceous (80%) → Ordovician (80%) → Permian (96%)','Permian (96%) → Ordovician (80%) → Cretaceous (80%)','All three wiped out exactly the same percentage of life'],
+   a:0,desc:'Earth\'s most catastrophic moments!',
+   ex:'Both Ordovician and Cretaceous extinctions wiped out ~80% of life (tied). But the Permian "Great Dying" at ~96% was FAR worse — it almost ended ALL life on Earth! 💀',
+   fun:'🦎 After the Permian extinction, it took about 10 MILLION years for ecosystems to fully recover — life barely survived!'},
+  {id:'s9',type:'jatm',icon:'⛈️',title:'Clouds & Precipitation',req:170,pts:30,
+   q:'Hailstones can be tennis-ball sized. What process creates LARGER hailstones vs smaller ones?',
+   o:['Larger hailstones fall from higher clouds; smaller ones fall from lower clouds','Larger hailstones have been carried up and down by updrafts MULTIPLE TIMES, getting coated in layers of ice each pass','Temperature is the only factor — colder storms produce bigger hail','Larger hailstones form over land; smaller ones form over the ocean'],
+   a:1,ex:'Each time an updraft carries the hailstone UP, it gets another coating of ice. The strongest updrafts (in the most intense supercell thunderstorms) can carry hailstones up and down many times → each cycle adds another layer → GIANT hail! ⚽',
+   desc:'The science behind extreme precipitation!',
+   fun:'⚽ A hailstone the size of a softball can reach speeds of 100 mph when it finally falls — it\'s like being hit by a baseball pitch!'},
+  {id:'s10',type:'jgeo',icon:'🏆',title:'Science Master Challenge',req:200,pts:50,
+   q:'MASTER QUESTION: Which sequence correctly shows BOTH the life milestone AND its matching geologic period?',
+   o:['Backbone→Ordovician, Eggshells→Devonian, Fruit→Jurassic, Hominids→Paleogene','Backbone→Cambrian, Eggshells→Mississippian, Fruit→Cretaceous, Land-dwelling vertebrates→Devonian, Hominids→Neogene','Backbone→Silurian, Eggshells→Triassic, Fruit→Cretaceous, Hominids→Quaternary','Backbone→Cambrian, Eggshells→Pennsylvanian, Fruit→Jurassic, Hominids→Neogene'],
+   a:1,ex:'PERFECT ANSWERS: Backbone (vertebrates) = Cambrian. Eggshells (reptile eggs) = Mississippian. Fruit (flowering plants) = Cretaceous. Land-dwelling vertebrates = Devonian (amphibians). Hominids = Neogene. These are the 5 KEY milestones your teacher emphasized! 🎯',
+   desc:'Final boss — are you a Science Legend?',
+   fun:'🧬 Every living animal with a backbone today — fish, frogs, lizards, birds, mammals, YOU — can trace the origin of that backbone to a tiny jawless fish in the Cambrian Ocean, 500 million years ago!'},
+];
+let jDone={};
+function renderJourney(){
+  const path=document.getElementById('jrn-path');
+  path.innerHTML='<div style="position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--geo),var(--vol),var(--atm));transform:translateX(-50%);border-radius:2px;z-index:0"></div>';
+  STOPS.forEach((s,i)=>{
+    const done=jDone[s.id];
+    const unlocked=totalPts>=s.req||done;
+    const div=document.createElement('div');div.className='jrn-stop';
+    const typeClass=s.type;
+    const side=i%2===0;
+    div.innerHTML=`
+      ${side?`<div class="jrn-content"><div class="jrn-card">
+        <h3>${s.title}</h3><p>${s.desc}</p>
+        <span class="jrn-pts">${s.pts} pts</span>
+        ${done?'<span class="jrn-done-tag">✅ Done!</span>':''}
+        ${!unlocked?`<span style="display:block;margin-top:6px;font-size:0.76rem;color:var(--muted)">🔒 Need ${s.req} pts to unlock</span>`:''}
+      </div></div>`:'<div class="jrn-spacer"></div>'}
+      <div class="jrn-node ${typeClass} ${!unlocked?'jlocked':''} ${done?'jdone':''}"
+           onclick="${unlocked?`openStop('${s.id}')`:''}"
+           title="${!unlocked?`Earn ${s.req} pts to unlock`:'Click to answer!'}">
+        ${done?'✅':s.icon}
+      </div>
+      ${!side?`<div class="jrn-content"><div class="jrn-card">
+        <h3>${s.title}</h3><p>${s.desc}</p>
+        <span class="jrn-pts">${s.pts} pts</span>
+        ${done?'<span class="jrn-done-tag">✅ Done!</span>':''}
+        ${!unlocked?`<span style="display:block;margin-top:6px;font-size:0.76rem;color:var(--muted)">🔒 Need ${s.req} pts to unlock</span>`:''}
+      </div></div>`:'<div class="jrn-spacer"></div>'}`;
+    path.appendChild(div);
+  });
+}
+function openStop(id){
+  const s=STOPS.find(x=>x.id===id);
+  if(jDone[id]){
+    document.getElementById('modal-bg').classList.add('open');
+    document.getElementById('modal-topic-row').innerHTML=`<span class="q-topic-tag ${s.type.replace('j','tg-')}" style="font-size:0.85rem">✅ Already completed!</span>`;
+    document.getElementById('modal-q-text').textContent=`You already answered this one. Well done! Here's a fun fact: ${s.fun}`;
+    document.getElementById('modal-opts').innerHTML='';
+    document.getElementById('modal-result').style.display='block';
+    document.getElementById('modal-emoji-big').textContent='🌟';
+    document.getElementById('modal-pts-earned').textContent='';
+    document.getElementById('modal-explain').textContent='Keep exploring!';
+    return;
+  }
+  document.getElementById('modal-bg').classList.add('open');
+  document.getElementById('modal-result').style.display='none';
+  const tInfo={'jgeo':{cls:'tg-geo',lbl:'⏳ Geologic'},'jvol':{cls:'tg-vol',lbl:'🌋 Volcano'},'jatm':{cls:'tg-atm',lbl:'🌤️ Atmosphere'}};
+  const ti=tInfo[s.type]||tInfo.jgeo;
+  document.getElementById('modal-topic-row').innerHTML=
+    '<span class="q-topic-tag '+ti.cls+'">'+ti.lbl+'</span>'+
+    ' <span style="margin-left:8px;color:var(--yellow);font-weight:700;font-size:0.9rem">Worth '+s.pts+' pts!</span>';
+  document.getElementById('modal-q-text').textContent=s.q;
+  const L=['A','B','C','D'];
+  document.getElementById('modal-opts').innerHTML=s.o.map((o,i)=>
+    `<button class="modal-opt" onclick="ansStop('${s.id}',${i})">${L[i]}) ${o}</button>`).join('');
+}
+function ansStop(id,i){
+  const s=STOPS.find(x=>x.id===id);
+  document.querySelectorAll('.modal-opt').forEach(b=>b.disabled=true);
+  if(i===s.a){
+    document.querySelectorAll('.modal-opt')[i].classList.add('correct');
+    addPts(s.pts);jDone[id]=true;
+    document.getElementById('modal-result').style.display='block';
+    document.getElementById('modal-emoji-big').textContent='🎉';
+    document.getElementById('modal-pts-earned').textContent=`+${s.pts} pts!`;
+    document.getElementById('modal-explain').textContent=s.ex+' '+s.fun;
+    confetti();
+  }else{
+    document.querySelectorAll('.modal-opt')[i].classList.add('wrong');
+    document.querySelectorAll('.modal-opt')[s.a].classList.add('correct');
+    resetStreak();
+    document.getElementById('modal-result').style.display='block';
+    document.getElementById('modal-emoji-big').textContent='💪';
+    document.getElementById('modal-pts-earned').textContent='Keep trying!';
+    document.getElementById('modal-explain').textContent=`Correct answer: ${s.o[s.a]}. ${s.ex}`;
+  }
+}
+function closeModal(){
+  document.getElementById('modal-bg').classList.remove('open');
+  renderJourney();
+}
+document.getElementById('modal-bg').addEventListener('click',e=>{if(e.target===document.getElementById('modal-bg'))closeModal();});
+</script>
+</body>
+</html>
